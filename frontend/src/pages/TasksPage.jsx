@@ -1,0 +1,177 @@
+import { useState, useEffect } from "react";
+
+export default function TasksPage() {
+  const [tasks, setTasks] = useState([]);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    priority: "Medium", // 默认中等
+  });
+
+  const token = localStorage.getItem("token");
+
+  const fetchTasks = async () => {
+    const res = await fetch("http://localhost:4000/api/tasks", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setTasks(data);
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    await fetch("http://localhost:4000/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(form),
+    });
+
+    setForm({ title: "", description: "", priority: "Medium" });
+    fetchTasks();
+  };
+
+  const deleteTask = async (id) => {
+    await fetch(`http://localhost:4000/api/tasks/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    fetchTasks();
+  };
+
+  const setPriority = (level) => {
+    setForm((prev) => ({ ...prev, priority: level }));
+  };
+
+  // 小圆点颜色
+  const priorityColor = (p) => {
+    if (p === "High") return "bg-red-500";
+    if (p === "Low") return "bg-gray-400";
+    return "bg-blue-500"; // Medium
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center py-12 px-4">
+      {/* 顶部标题 */}
+      <h1 className="text-4xl font-semibold text-gray-900 mb-10 tracking-tight">
+        Personal Task Manager
+      </h1>
+
+      {/* 添加任务卡片 */}
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-8 mb-10">
+        <h2 className="text-xl font-semibold text-gray-800 mb-6">
+          Add New Task
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+            placeholder="Task Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+          />
+
+          <textarea
+            className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+            rows={3}
+            placeholder="Notes (optional)"
+            value={form.description}
+            onChange={(e) =>
+              setForm({ ...form, description: e.target.value })
+            }
+          />
+
+          {/* Priority Apple 风 segmented 控件 */}
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">
+              Priority
+            </p>
+            <div className="flex bg-gray-100 rounded-full p-1 text-sm font-medium">
+              {["High", "Medium", "Low"].map((p) => {
+                const active = form.priority === p;
+                return (
+                  <button
+                    type="button"
+                    key={p}
+                    onClick={() => setPriority(p)}
+                    className={`flex-1 py-2 rounded-full transition ${
+                      active
+                        ? "bg-[#007AFF] text-white shadow-sm"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 rounded-xl bg-[#007AFF] text-white text-lg font-medium hover:bg-blue-600 transition active:scale-[0.98]"
+          >
+            Add Task
+          </button>
+        </form>
+      </div>
+
+      {/* 任务列表 */}
+      <div className="w-full max-w-2xl">
+        <h2 className="text-xl font-semibold text-gray-900 mb-5">Your Tasks</h2>
+
+        <div className="space-y-4">
+          {tasks.map((t) => {
+            const p = t.priority || "Medium";
+            return (
+              <div
+                key={t.id}
+                className="bg-white rounded-2xl shadow-[0_3px_15px_rgba(0,0,0,0.05)] p-6 border border-gray-100"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900">
+                      {t.title}
+                    </h3>
+                    <p className="text-gray-600 mt-1">{t.description}</p>
+                  </div>
+                  <button
+                    onClick={() => deleteTask(t.id)}
+                    className="text-red-500 font-medium hover:text-red-600 transition ml-4"
+                  >
+                    Delete
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between mt-3">
+                  {/* 优先级 pill */}
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span
+                      className={`w-2 h-2 rounded-full ${priorityColor(p)}`}
+                    />
+                    <span className="text-gray-500">Priority:</span>
+                    <span className="font-medium text-gray-700">{p}</span>
+                  </div>
+                  {/* 预留给 Category / Due date 之类 */}
+                </div>
+              </div>
+            );
+          })}
+
+          {tasks.length === 0 && (
+            <p className="text-gray-400 text-center mt-10 text-lg">
+              No tasks yet.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
