@@ -1,5 +1,5 @@
-export default function TaskCard({ task, onClick, onDelete }) {
-  const statusDone = task.status === "done";
+export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
+  const statusDone = task.completed;
 
   return (
     <button
@@ -7,9 +7,13 @@ export default function TaskCard({ task, onClick, onDelete }) {
       className="w-full text-left bg-white rounded-3xl px-4 py-3 mb-3 shadow-sm border border-slate-100 active:scale-[0.99] transition"
     >
       <div className="flex items-start gap-3">
-        {/* 圆形勾选框（这里只是 UI，真正状态后面可以接 PUT 接口） */}
+        {/* 圆形勾选框 */}
         <div
-          className={`mt-1 w-5 h-5 rounded-full border flex items-center justify-center ${
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleStatus && onToggleStatus();
+          }}
+          className={`mt-1 w-5 h-5 rounded-full border flex items-center justify-center cursor-pointer ${
             statusDone
               ? "border-green-500 bg-green-500"
               : "border-slate-300 bg-white"
