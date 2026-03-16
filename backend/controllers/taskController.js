@@ -61,3 +61,21 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// 更新任务完成状态
+export const updateTaskStatus = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  const { completed } = req.body;
+
+  try {
+    await pool.query(
+      "UPDATE tasks SET completed=? WHERE id=? AND user_id=?",
+      [completed, id, userId]
+    );
+    res.json({ message: "Task status updated" });
+  } catch (err) {
+    console.error("updateTaskStatus error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

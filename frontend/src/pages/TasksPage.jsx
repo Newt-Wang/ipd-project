@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import TaskCard from "../components/TaskCard";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
@@ -42,6 +43,18 @@ export default function TasksPage() {
     await fetch(`http://localhost:4000/api/tasks/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
+    });
+    fetchTasks();
+  };
+
+  const toggleTaskStatus = async (id, currentStatus) => {
+    await fetch(`http://localhost:4000/api/tasks/${id}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ completed: !currentStatus }),
     });
     fetchTasks();
   };
@@ -129,39 +142,14 @@ export default function TasksPage() {
 
         <div className="space-y-4">
           {tasks.map((t) => {
-            const p = t.priority || "Medium";
             return (
-              <div
+              <TaskCard
                 key={t.id}
-                className="bg-white rounded-2xl shadow-[0_3px_15px_rgba(0,0,0,0.05)] p-6 border border-gray-100"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900">
-                      {t.title}
-                    </h3>
-                    <p className="text-gray-600 mt-1">{t.description}</p>
-                  </div>
-                  <button
-                    onClick={() => deleteTask(t.id)}
-                    className="text-red-500 font-medium hover:text-red-600 transition ml-4"
-                  >
-                    Delete
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between mt-3">
-                  {/* 优先级 pill */}
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span
-                      className={`w-2 h-2 rounded-full ${priorityColor(p)}`}
-                    />
-                    <span className="text-gray-500">Priority:</span>
-                    <span className="font-medium text-gray-700">{p}</span>
-                  </div>
-                  {/* 预留给 Category / Due date 之类 */}
-                </div>
-              </div>
+                task={t}
+                onClick={() => {}}
+                onDelete={() => deleteTask(t.id)}
+                onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
+              />
             );
           })}
 
