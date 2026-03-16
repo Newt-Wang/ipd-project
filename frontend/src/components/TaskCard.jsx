@@ -1,5 +1,16 @@
 export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
-  const statusDone = task.completed;
+  // 确保 statusDone 是布尔值，避免显示"0"
+  const statusDone = Boolean(task.completed);
+  
+  // 获取实时时间
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    return `Today · ${formattedHours}:${minutes} ${period}`;
+  };
 
   return (
     <button
@@ -39,12 +50,9 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
           )}
           <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
             <div>
-              Today · 5:00 PM{/* 这里只是示意，后端加上日期后再真正计算 */}
+              {getCurrentTime()}
             </div>
-            <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-red-400" />
-              <span>Work</span>
-            </div>
+            {/* 暂时移除 Work 标签，因为还没有添加分区功能 */}
           </div>
         </div>
       </div>
