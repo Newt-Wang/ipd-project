@@ -12,10 +12,27 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
     return `Today · ${formattedHours}:${minutes} ${period}`;
   };
 
+  // 获取优先级标签的样式
+  const getPriorityBadgeStyle = (priority) => {
+    switch (priority) {
+      case 'High':
+        return 'bg-red-100 text-red-800';
+      case 'Low':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-blue-100 text-blue-800';
+    }
+  };
+
   return (
     <button
       onClick={onClick}
-      className="w-full text-left bg-white rounded-3xl px-6 py-4 mb-3 shadow-sm border border-slate-100 active:scale-[0.99] transition hover:shadow-md"
+      className={`w-full text-left bg-white rounded-3xl p-5 mb-3 border border-slate-100 active:scale-[0.99] transition ${
+        statusDone ? 'opacity-60' : 'shadow-sm hover:shadow-lg'
+      }`}
+      style={{
+        boxShadow: statusDone ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+      }}
     >
       <div className="flex items-start gap-4">
         {/* 圆形勾选框 */}
@@ -48,23 +65,21 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
               {task.description}
             </div>
           )}
-          <div className="mt-3 flex flex-col gap-1 text-[12px] text-slate-400">
+          <div className="mt-4 flex flex-col gap-2 text-[12px]">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="text-slate-400">
                 {getCurrentTime()}
               </div>
               {/* 显示优先级 */}
-              <div className="flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full ${
-                  task.priority === "High" ? "bg-red-500" :
-                  task.priority === "Low" ? "bg-gray-400" : "bg-blue-500"
-                }`} />
-                <span>{task.priority || "Medium"}</span>
+              <div>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityBadgeStyle(task.priority || 'Medium')}`}>
+                  {task.priority || "Medium"}
+                </span>
               </div>
             </div>
             {/* 显示截止日期 */}
             {task.due_date && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 text-slate-400">
                 <span>📅</span>
                 <span>{new Date(task.due_date).toLocaleString()}</span>
               </div>
@@ -74,7 +89,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
       </div>
 
       {onDelete && (
-        <div className="mt-3 flex justify-end">
+        <div className="mt-4 flex justify-end">
           <button
             onClick={(e) => {
               e.stopPropagation();
