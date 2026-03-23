@@ -2,14 +2,37 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
   // 确保 statusDone 是布尔值，避免显示"0"
   const statusDone = Boolean(task.completed);
   
+  // 统一时间格式化函数
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    // 检查是否是今天
+    if (dateOnly.getTime() === today.getTime()) {
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `今天 ${hours}:${minutes}`;
+    }
+    
+    // 检查是否是今年
+    if (date.getFullYear() === now.getFullYear()) {
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${month}月${day}日`;
+    }
+    
+    // 去年及更早
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}/${month}/${day}`;
+  };
+
   // 获取实时时间
   const getCurrentTime = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    return `Today · ${formattedHours}:${minutes} ${period}`;
+    return formatTime(new Date());
   };
 
   // 获取优先级标签的样式
@@ -81,7 +104,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             {task.due_date && (
               <div className="flex items-center gap-1 text-slate-400">
                 <span>📅</span>
-                <span>{new Date(task.due_date).toLocaleString()}</span>
+                <span>{formatTime(task.due_date)}</span>
               </div>
             )}
           </div>
