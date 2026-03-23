@@ -19,6 +19,10 @@ export default function TasksPage() {
     navigate("/");
   };
 
+  const handleEditTask = (id) => {
+    navigate(`/tasks/edit/${id}`);
+  };
+
   const fetchTasks = async () => {
     const res = await fetch("http://localhost:4000/api/tasks", {
       headers: { Authorization: `Bearer ${token}` },
@@ -166,7 +170,7 @@ export default function TasksPage() {
               <TaskCard
                 key={t.id}
                 task={t}
-                onClick={() => {}}
+                onClick={() => handleEditTask(t.id)}
                 onDelete={() => deleteTask(t.id)}
                 onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
               />
