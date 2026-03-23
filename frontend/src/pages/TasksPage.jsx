@@ -9,6 +9,7 @@ export default function TasksPage() {
     title: "",
     description: "",
     priority: "Medium", // 默认中等
+    due_date: "",
   });
   const [showAddForm, setShowAddForm] = useState(false); // 控制添加任务表单的显示/隐藏
 
@@ -47,7 +48,7 @@ export default function TasksPage() {
       body: JSON.stringify(form),
     });
 
-    setForm({ title: "", description: "", priority: "Medium" });
+    setForm({ title: "", description: "", priority: "Medium", due_date: "" });
     setShowAddForm(false); // 提交后隐藏表单
     fetchTasks();
   };
@@ -148,6 +149,19 @@ export default function TasksPage() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Due Date */}
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-2">
+                Due Date
+              </p>
+              <input
+                type="datetime-local"
+                className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+                value={form.due_date}
+                onChange={(e) => setForm({ ...form, due_date: e.target.value })}
+              />
             </div>
 
             <button

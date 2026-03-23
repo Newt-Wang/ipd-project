@@ -48,18 +48,27 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
               {task.description}
             </div>
           )}
-          <div className="mt-3 flex items-center justify-between text-[12px] text-slate-400">
-            <div>
-              {getCurrentTime()}
+          <div className="mt-3 flex flex-col gap-1 text-[12px] text-slate-400">
+            <div className="flex items-center justify-between">
+              <div>
+                {getCurrentTime()}
+              </div>
+              {/* 显示优先级 */}
+              <div className="flex items-center gap-1">
+                <span className={`w-2 h-2 rounded-full ${
+                  task.priority === "High" ? "bg-red-500" :
+                  task.priority === "Low" ? "bg-gray-400" : "bg-blue-500"
+                }`} />
+                <span>{task.priority || "Medium"}</span>
+              </div>
             </div>
-            {/* 显示优先级 */}
-            <div className="flex items-center gap-1">
-              <span className={`w-2 h-2 rounded-full ${
-                task.priority === "High" ? "bg-red-500" :
-                task.priority === "Low" ? "bg-gray-400" : "bg-blue-500"
-              }`} />
-              <span>{task.priority || "Medium"}</span>
-            </div>
+            {/* 显示截止日期 */}
+            {task.due_date && (
+              <div className="flex items-center gap-1">
+                <span>📅</span>
+                <span>{new Date(task.due_date).toLocaleString()}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

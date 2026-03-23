@@ -10,15 +10,22 @@ export const getTasks = async (req, res) => {
   res.json(tasks);
 };
 
-// 新建任务（增加 priority）
+// 新建任务（增加 priority 和 due_date）
 export const createTask = async (req, res) => {
   const userId = req.user.id;
-  const { title, description, priority = "Medium" } = req.body;
+  const { title, description, priority = "Medium", due_date } = req.body;
+
+  // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
+  let formattedDueDate = null;
+  if (due_date) {
+    const date = new Date(due_date);
+    formattedDueDate = date.toISOString().slice(0, 19).replace('T', ' ');
+  }
 
   try {
     await pool.query(
-      "INSERT INTO tasks (title, description, priority, user_id) VALUES (?, ?, ?, ?)",
-      [title, description, priority, userId]
+      "INSERT INTO tasks (title, description, priority, due_date, user_id) VALUES (?, ?, ?, ?, ?)",
+      [title, description, priority, formattedDueDate, userId]
     );
     res.json({ message: "Task created" });
   } catch (err) {
@@ -27,16 +34,23 @@ export const createTask = async (req, res) => {
   }
 };
 
-// 更新任务（增加 priority）
+// 更新任务（增加 priority 和 due_date）
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
-  const { title, description, completed, priority = "Medium" } = req.body;
+  const { title, description, completed, priority = "Medium", due_date } = req.body;
+
+  // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
+  let formattedDueDate = null;
+  if (due_date) {
+    const date = new Date(due_date);
+    formattedDueDate = date.toISOString().slice(0, 19).replace('T', ' ');
+  }
 
   try {
     await pool.query(
-      "UPDATE tasks SET title=?, description=?, completed=?, priority=? WHERE id=? AND user_id=?",
-      [title, description, completed, priority, id, userId]
+      "UPDATE tasks SET title=?, description=?, completed=?, priority=?, due_date=? WHERE id=? AND user_id=?",
+      [title, description, completed, priority, formattedDueDate, id, userId]
     );
     res.json({ message: "Task updated" });
   } catch (err) {
