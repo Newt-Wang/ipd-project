@@ -95,9 +95,35 @@ export default function TasksPage() {
       {/* 添加任务按钮 */}
       <button
         onClick={() => setShowAddForm(!showAddForm)}
-        className="w-full max-w-2xl py-3 rounded-xl bg-[#007AFF] text-white text-lg font-medium hover:bg-blue-600 transition active:scale-[0.98] mb-6"
+        className="w-full max-w-2xl py-3 rounded-xl bg-[#0066CC] text-white text-lg font-medium hover:bg-[#0052A3] transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2"
+        style={{
+          transform: showAddForm ? 'none' : 'translateY(0)',
+          boxShadow: '0 4px 6px -1px rgba(0, 102, 204, 0.3)'
+        }}
+        onMouseEnter={(e) => {
+          if (!showAddForm) {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 8px -1px rgba(0, 102, 204, 0.4)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!showAddForm) {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 102, 204, 0.3)';
+          }
+        }}
       >
-        {showAddForm ? "Cancel" : "Add New Task"}
+        {showAddForm ? (
+          <>
+            <span>✕</span>
+            <span>Cancel</span>
+          </>
+        ) : (
+          <>
+            <span className="text-xl">+</span>
+            <span>Add New Task</span>
+          </>
+        )}
       </button>
 
       {/* 添加任务卡片（可折叠） */}
