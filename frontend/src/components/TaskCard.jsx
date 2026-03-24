@@ -8,31 +8,18 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-    // 检查是否是今天
+
     if (dateOnly.getTime() === today.getTime()) {
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-      return `今天 ${hours}:${minutes}`;
+      return `Today ${hours}:${minutes}`;
     }
-    
-    // 检查是否是今年
-    if (date.getFullYear() === now.getFullYear()) {
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
-      return `${month}月${day}日`;
-    }
-    
-    // 去年及更早
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}/${month}/${day}`;
-  };
 
-  // 获取实时时间
-  const getCurrentTime = () => {
-    return formatTime(new Date());
+    if (date.getFullYear() === now.getFullYear()) {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
   // 获取优先级标签的样式
@@ -91,7 +78,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
           <div className="mt-4 flex flex-col gap-2 text-[12px]">
             <div className="flex items-center justify-between">
               <div className="text-slate-400">
-                {getCurrentTime()}
+                {task.created_at ? formatTime(task.created_at) : ""}
               </div>
               {/* 显示优先级 */}
               <div>

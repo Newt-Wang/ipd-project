@@ -81,16 +81,19 @@ export default function TasksPage() {
   };
 
   const filteredTasks = tasks.filter((task) => {
-  if (filterType === "date") {
-    return task.date === selectedDate;
-  }
-  if (filterType === "status") {
-    if (selectedStatus === "completed") return task.completed;
-    if (selectedStatus === "pending") return !task.completed;
+    if (filterType === "date") {
+      if (!selectedDate) return true;
+      // due_date from DB is "2026-03-24 14:30:00", selectedDate is "2026-03-24"
+      const taskDate = task.due_date ? task.due_date.slice(0, 10) : null;
+      return taskDate === selectedDate;
+    }
+    if (filterType === "status") {
+      if (selectedStatus === "completed") return Boolean(task.completed);
+      if (selectedStatus === "pending") return !Boolean(task.completed);
+      return true;
+    }
     return true;
-  }
-  return true;
-});
+  });
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center py-12 px-4">
@@ -110,10 +113,16 @@ export default function TasksPage() {
       {/* 添加任务按钮 */}
       <button
         onClick={() => setShowAddForm(!showAddForm)}
-        className="w-full max-w-2xl py-3 rounded-xl bg-[#0066CC] text-white text-lg font-medium hover:bg-[#0052A3] transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2"
+        className={`w-full max-w-2xl py-3 rounded-xl text-white text-lg font-medium transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2 ${
+          showAddForm
+            ? 'bg-[#CC0000] hover:bg-[#A30000]'
+            : 'bg-[#0066CC] hover:bg-[#0052A3]'
+        }`}
         style={{
           transform: showAddForm ? 'none' : 'translateY(0)',
-          boxShadow: '0 4px 6px -1px rgba(0, 102, 204, 0.3)'
+          boxShadow: showAddForm
+            ? '0 4px 6px -1px rgba(204, 0, 0, 0.3)'
+            : '0 4px 6px -1px rgba(0, 102, 204, 0.3)'
         }}
         onMouseEnter={(e) => {
           if (!showAddForm) {
