@@ -1,55 +1,55 @@
 
 
-# IPD Project - 任务管理系统
+# IPD Project - Task Management System
 
-一个基于 Node.js + Express 后端和 React + Vite 前端构建的任务管理应用。
+A task management application built with Node.js + Express backend and React + Vite frontend.
 
-## 项目简介
+## Project Overview
 
-这是一个完整的全栈任务管理应用程序，支持用户注册、登录、任务 CRUD 操作。前端采用现代化的 React + Vite + Tailwind CSS 构建，后端使用 Express 框架和 MySQL 数据库。
+This is a full-stack task management application supporting user registration, login, and full CRUD operations for tasks. The frontend is built with modern React + Vite + Tailwind CSS, while the backend uses the Express framework and MySQL database.
 
-## 技术栈
+## Technology Stack
 
-### 后端
+### Backend
 - **Runtime**: Node.js
-- **框架**: Express.js
-- **数据库**: MySQL (mysql2)
-- **认证**: JWT (jsonwebtoken) + bcryptjs
-- **中间件**: CORS, body-parser
+- **Framework**: Express.js
+- **Database**: MySQL (mysql2)
+- **Authentication**: JWT (jsonwebtoken) + bcryptjs
+- **Middleware**: CORS, body-parser
 
-### 前端
-- **框架**: React 18
-- **构建工具**: Vite
-- **样式**: Tailwind CSS
-- **路由**: React Router
+### Frontend
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **Routing**: React Router
 
-## 项目结构
+## Project Structure
 
 ```
 ipd-project/
 ├── backend/
-│   ├── config.js           # 配置文件
-│   ├── db.js               # 数据库连接
-│   ├── server.js           # 服务器入口
-│   ├── controllers/        # 控制器
+│   ├── config.js           # Configuration file
+│   ├── db.js               # Database connection
+│   ├── server.js           # Server entry point
+│   ├── controllers/        # Controllers
 │   │   ├── authController.js
 │   │   └── taskController.js
-│   ├── middleware/          # 中间件
+│   ├── middleware/         # Middleware
 │   │   └── authMiddleware.js
-│   ├── routes/             # 路由
+│   ├── routes/             # Routes
 │   │   ├── auth.js
 │   │   └── tasks.js
 │   └── package.json
 │
 └── frontend/
     ├── src/
-    │   ├── pages/          # 页面组件
+    │   ├── pages/          # Page components
     │   │   ├── LoginPage.jsx
     │   │   ├── RegisterPage.jsx
     │   │   ├── TasksPage.jsx
     │   │   ├── EditTaskPage.jsx
     │   │   └── ForgotPasswordPage.jsx
-    │   ├── components/      # 公共组件
+    │   ├── components/     # Shared components
     │   │   └── TaskCard.jsx
     │   ├── App.jsx
     │   ├── main.jsx
@@ -60,39 +60,39 @@ ipd-project/
     └── package.json
 ```
 
-## 功能特性
+## Features
 
-- ✅ 用户注册与登录
-- ✅ JWT 身份验证
-- ✅ 任务创建、读取、更新、删除
-- ✅ 任务优先级设置（高/中/低）
-- ✅ 任务状态管理（进行中/已完成）
-- ✅ 响应式 UI 设计
+- ✅ User registration and login
+- ✅ JWT authentication
+- ✅ Task creation, reading, updating, and deletion
+- ✅ Task priority settings (High/Medium/Low)
+- ✅ Task status management (In Progress/Completed)
+- ✅ Responsive UI design
 
-## 快速开始
+## Quick Start
 
-### 前置要求
+### Prerequisites
 
 - Node.js (v14+)
-- MySQL 数据库
+- MySQL database
 
-### 安装步骤
+### Installation Steps
 
-1. **克隆项目**
+1. **Clone the repository**
    ```bash
    git clone <repository-url>
    cd ipd-project
    ```
 
-2. **安装后端依赖**
+2. **Install backend dependencies**
    ```bash
    cd backend
    npm install
    ```
 
-3. **配置数据库**
+3. **Configure the database**
    
-   在 `backend/config.js` 中配置数据库连接信息：
+   Update the database connection details in `backend/config.js`:
    ```javascript
    module.exports = {
      host: 'localhost',
@@ -102,47 +102,47 @@ ipd-project/
    };
    ```
 
-4. **启动后端服务**
+4. **Start the backend server**
    ```bash
    npm start
-   # 或开发模式
+   # or in development mode
    node server.js
    ```
 
-5. **安装前端依赖**（新终端）
+5. **Install frontend dependencies** (in a new terminal)
    ```bash
    cd frontend
    npm install
    ```
 
-6. **启动前端开发服务器**
+6. **Start the frontend development server**
    ```bash
    npm run dev
    ```
 
-7. **访问应用**
+7. **Access the application**
    
-   打开浏览器访问 `http://localhost:5173`
+   Open your browser and navigate to `http://localhost:5173`
 
-## API 端点
+## API Endpoints
 
-### 认证接口
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| POST | `/api/auth/register` | 用户注册 |
-| POST | `/api/auth/login` | 用户登录 |
+### Authentication Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| POST   | `/api/auth/register` | User registration |
+| POST   | `/api/auth/login` | User login |
 
-### 任务接口
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| GET | `/api/tasks` | 获取所有任务 |
-| POST | `/api/tasks` | 创建新任务 |
-| PUT | `/api/tasks/:id` | 更新任务 |
-| DELETE | `/api/tasks/:id` | 删除任务 |
+### Task Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| GET    | `/api/tasks` | Retrieve all tasks |
+| POST   | `/api/tasks` | Create a new task |
+| PUT    | `/api/tasks/:id` | Update a task |
+| DELETE | `/api/tasks/:id` | Delete a task |
 
-## 环境变量
+## Environment Variables
 
-### 后端 (.env)
+### Backend (.env)
 ```env
 PORT=3000
 DB_HOST=localhost
@@ -152,12 +152,12 @@ DB_NAME=taskmanager
 JWT_SECRET=your_secret_key
 ```
 
-## 开发说明
+## Development Notes
 
-- 后端运行在 `http://localhost:3000`
-- 前端默认运行在 `http://localhost:5173`
-- 前端已配置 CORS 代理以解决跨域问题
+- Backend runs at `http://localhost:3000`
+- Frontend runs at `http://localhost:5173` by default
+- Frontend is configured with a CORS proxy to handle cross-origin requests
 
-## 许可证
+## License
 
 MIT License
