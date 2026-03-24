@@ -24,6 +24,7 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         username: form.email,
+        email: form.email,
         password: form.password
       })
     });
@@ -35,10 +36,58 @@ export default function LoginPage() {
     }
 
     localStorage.setItem("token", data.token);
+<<<<<<< HEAD
+    alert("Login successful!");
+
+=======
+>>>>>>> origin/main
     navigate("/tasks");
   };
 
   return (
+<<<<<<< HEAD
+    <div className="flex flex-col justify-center items-center h-screen px-6">
+      <h1 className="text-2xl font-bold mb-6">Task Manager</h1>
+
+      <form onSubmit={handleSubmit} className="w-full max-w-md">
+        <input
+          type="email"
+          name="email"
+          placeholder="Email address"
+          className="w-full p-3 border rounded mb-4"
+          value={form.email}
+          onChange={handleChange}
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          className="w-full p-3 border rounded mb-4"
+          value={form.password}
+          onChange={handleChange}
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white font-bold p-3 rounded"
+        >
+          Log In
+        </button>
+
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <a 
+              href="/register" 
+              className="text-blue-500 hover:underline"
+            >
+              Register here
+            </a>
+          </p>
+        </div>
+      </form>
+=======
     <div className="auth-bg px-4">
       <div className="auth-card fade-in-up">
         {/* Brand */}
@@ -109,6 +158,7 @@ export default function LoginPage() {
           </a>
         </p>
       </div>
+>>>>>>> origin/main
     </div>
   );
 }

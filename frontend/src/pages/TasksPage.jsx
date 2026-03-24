@@ -8,13 +8,12 @@ export default function TasksPage() {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    priority: "Medium",
+    priority: "Medium", // 默认中等
     due_date: "",
+    reminder_minutes_before: 0,
   });
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [filterType, setFilterType] = useState(null); // 'date' / 'status'
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [showAddForm, setShowAddForm] = useState(false); // 控制添加任务表单的显示/隐藏
+  const [notifications, setNotifications] = useState([]);
 
   const token = localStorage.getItem("token");
 
@@ -35,12 +34,27 @@ export default function TasksPage() {
     setTasks(data);
   };
 
+  const fetchNotifications = async () => {
+    const res = await fetch("http://localhost:4000/api/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setNotifications(Array.isArray(data) ? data : []);
+  };
+
   useEffect(() => {
     fetchTasks();
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(fetchNotifications, 60 * 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     await fetch("http://localhost:4000/api/tasks", {
       method: "POST",
       headers: {
@@ -49,9 +63,17 @@ export default function TasksPage() {
       },
       body: JSON.stringify(form),
     });
-    setForm({ title: "", description: "", priority: "Medium", due_date: "" });
-    setShowAddForm(false);
+
+    setForm({
+      title: "",
+      description: "",
+      priority: "Medium",
+      due_date: "",
+      reminder_minutes_before: 0,
+    });
+    setShowAddForm(false); // 提交后隐藏表单
     fetchTasks();
+    fetchNotifications();
   };
 
   const deleteTask = async (id) => {
@@ -74,287 +96,205 @@ export default function TasksPage() {
     fetchTasks();
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filterType === "date") {
-      if (!selectedDate) return true;
-      const taskDate = task.due_date ? task.due_date.slice(0, 10) : null;
-      return taskDate === selectedDate;
-    }
-    if (filterType === "status") {
-      if (selectedStatus === "completed") return Boolean(task.completed);
-      if (selectedStatus === "pending") return !Boolean(task.completed);
-      return true;
-    }
-    return true;
-  });
+  const setPriority = (level) => {
+    setForm((prev) => ({ ...prev, priority: level }));
+  };
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((t) => Boolean(t.completed)).length;
-  const pendingTasks = totalTasks - completedTasks;
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
+
+  const markNotificationRead = async (id) => {
+    await fetch(`http://localhost:4000/api/notifications/${id}/read`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    fetchNotifications();
+  };
 
   return (
-    <div style={{ background: 'var(--surface-secondary)', minHeight: '100vh' }}>
-
-      {/* ── Navbar ── */}
-      <nav className="navbar">
-        <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl"
-                 style={{ background: 'linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M9 11l3 3L22 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <span className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>
-              Task Manager
-            </span>
+    <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center py-12 px-4">
+      {/* 顶部标题和退出按钮 */}
+      <div className="w-full max-w-2xl flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
+          Personal Task Manager
+        </h1>
+        <div className="flex items-center gap-3">
+          <div className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm">
+            Notifications:{" "}
+            <span className="font-semibold text-blue-600">{unreadCount}</span>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-xl"
-            style={{
-              color: 'var(--text-secondary)',
-              background: 'var(--surface-secondary)',
-              border: '1.5px solid var(--border)'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#EF4444'; e.currentTarget.style.color = '#EF4444'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
             Logout
           </button>
         </div>
-      </nav>
+      </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      {/* 添加任务按钮 */}
+      <button
+        onClick={() => setShowAddForm(!showAddForm)}
+        className="w-full max-w-2xl py-3 rounded-xl bg-[#0066CC] text-white text-lg font-medium hover:bg-[#0052A3] transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2"
+        style={{
+          transform: showAddForm ? 'none' : 'translateY(0)',
+          boxShadow: '0 4px 6px -1px rgba(0, 102, 204, 0.3)'
+        }}
+        onMouseEnter={(e) => {
+          if (!showAddForm) {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 8px -1px rgba(0, 102, 204, 0.4)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!showAddForm) {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 102, 204, 0.3)';
+          }
+        }}
+      >
+        {showAddForm ? (
+          <>
+            <span>✕</span>
+            <span>Cancel</span>
+          </>
+        ) : (
+          <>
+            <span className="text-xl">+</span>
+            <span>Add New Task</span>
+          </>
+        )}
+      </button>
 
-        {/* ── Stats Row ── */}
-        <div className="flex gap-4 mb-8">
-          <div className="stat-card">
-            <div className="text-2xl font-bold" style={{ color: 'var(--brand-primary)' }}>
-              {totalTasks}
-            </div>
-            <div className="text-xs font-medium mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              Total Tasks
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="text-2xl font-bold" style={{ color: 'var(--warning)' }}>
-              {pendingTasks}
-            </div>
-            <div className="text-xs font-medium mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              In Progress
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="text-2xl font-bold" style={{ color: 'var(--success)' }}>
-              {completedTasks}
-            </div>
-            <div className="text-xs font-medium mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              Completed
-            </div>
-          </div>
-          {totalTasks > 0 && (
-            <div className="stat-card flex flex-col justify-between">
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                {Math.round((completedTasks / totalTasks) * 100)}%
+      {/* 添加任务卡片（可折叠） */}
+      {showAddForm && (
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6 mb-10">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Add New Task
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+              placeholder="Task Title"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+            />
+
+            <textarea
+              className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+              rows={3}
+              placeholder="Notes (optional)"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+            />
+
+            {/* Priority Apple 风 segmented 控件 */}
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-2">
+                Priority
+              </p>
+              <div className="flex bg-gray-100 rounded-full p-1 text-sm font-medium">
+                {["High", "Medium", "Low"].map((p) => {
+                  const active = form.priority === p;
+                  return (
+                    <button
+                      type="button"
+                      key={p}
+                      onClick={() => setPriority(p)}
+                      className={`flex-1 py-2 rounded-full transition ${
+                        active
+                          ? "bg-[#007AFF] text-white shadow-sm"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
               </div>
-              <div className="text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>
-                Progress
-              </div>
-              <div className="w-full h-1.5 rounded-full" style={{ background: 'var(--border)' }}>
-                <div
-                  className="h-1.5 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.round((completedTasks / totalTasks) * 100)}%`,
-                    background: 'linear-gradient(90deg, #4F6EF7, #10B981)'
-                  }}
-                />
-              </div>
             </div>
-          )}
-        </div>
 
-        {/* ── Add Task Button ── */}
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="w-full py-3.5 rounded-2xl text-white text-sm font-semibold mb-6 flex items-center justify-center gap-2 transition-all"
-          style={{
-            background: showAddForm
-              ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
-              : 'linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)',
-            boxShadow: showAddForm
-              ? '0 4px 12px rgba(239,68,68,0.35)'
-              : '0 4px 12px rgba(79,110,247,0.35)'
-          }}
-        >
-          {showAddForm ? (
-            <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-              </svg>
-              Cancel
-            </>
-          ) : (
-            <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-              </svg>
-              Add New Task
-            </>
-          )}
-        </button>
-
-        {/* ── Add Task Form ── */}
-        {showAddForm && (
-          <div className="section-card p-6 mb-6 fade-in-up">
-            <h2 className="text-base font-semibold mb-5" style={{ color: 'var(--text-primary)' }}>
-              New Task
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Due Date */}
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-2">
+                Due Date
+              </p>
               <input
-                className="form-input"
-                placeholder="Task title"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                required
+                type="datetime-local"
+                className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+                value={form.due_date}
+                onChange={(e) => setForm({ ...form, due_date: e.target.value })}
               />
-              <textarea
-                className="form-input"
-                style={{ resize: 'none', lineHeight: '1.6' }}
-                rows={3}
-                placeholder="Description (optional)"
-                value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
-              />
+            </div>
 
-              {/* Priority */}
-              <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                  Priority
-                </p>
-                <div className="flex gap-2">
-                  {[
-                    { label: "High", color: "#EF4444", bg: "#FEE2E2" },
-                    { label: "Medium", color: "#F59E0B", bg: "#FEF3C7" },
-                    { label: "Low", color: "#10B981", bg: "#D1FAE5" },
-                  ].map(({ label, color, bg }) => {
-                    const active = form.priority === label;
-                    return (
-                      <button
-                        type="button"
-                        key={label}
-                        onClick={() => setForm(prev => ({ ...prev, priority: label }))}
-                        className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                        style={{
-                          background: active ? bg : 'var(--surface-secondary)',
-                          color: active ? color : 'var(--text-secondary)',
-                          border: active ? `1.5px solid ${color}40` : '1.5px solid var(--border)',
-                          boxShadow: active ? `0 2px 8px ${color}20` : 'none'
-                        }}
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-2">
+                Reminder (minutes before due time)
+              </p>
+              <input
+                type="number"
+                min="0"
+                className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 transition outline-none"
+                value={form.reminder_minutes_before}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    reminder_minutes_before: Number(e.target.value || 0),
+                  })
+                }
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                0 means no reminder.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 rounded-xl bg-[#007AFF] text-white text-lg font-medium hover:bg-blue-600 transition active:scale-[0.98]"
+            >
+              Add Task
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* 任务列表 */}
+      <div className="w-full max-w-2xl">
+        {notifications.length > 0 && (
+          <div className="mb-5 bg-white rounded-2xl border border-gray-100 p-4">
+            <h3 className="font-semibold text-gray-800 mb-3">Recent reminders</h3>
+            <div className="space-y-2">
+              {notifications.slice(0, 5).map((n) => (
+                <div
+                  key={n.id}
+                  className={`rounded-lg p-3 border ${
+                    n.is_read ? "bg-gray-50 border-gray-100" : "bg-blue-50 border-blue-100"
+                  }`}
+                >
+                  <div className="text-sm font-medium text-gray-800">{n.title}</div>
+                  <div className="text-xs text-gray-600 mt-1">{n.message}</div>
+                  {!n.is_read && (
+                    <button
+                      type="button"
+                      onClick={() => markNotificationRead(n.id)}
+                      className="mt-2 text-xs text-blue-600 hover:underline"
+                    >
+                      Mark as read
+                    </button>
+                  )}
                 </div>
-              </div>
-
-              {/* Due Date */}
-              <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                  Due Date
-                </p>
-                <input
-                  type="datetime-local"
-                  className="form-input"
-                  value={form.due_date}
-                  onChange={(e) => setForm({ ...form, due_date: e.target.value })}
-                />
-              </div>
-
-              <button type="submit" className="btn-primary" style={{ marginTop: '8px' }}>
-                Add Task
-              </button>
-            </form>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* ── Filter Section ── */}
-        <div className="section-card p-5 mb-6">
-          <p className="text-sm font-semibold mb-3" style={{ color: 'var(--text-secondary)' }}>
-            Filter by
-          </p>
-          <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={() => setFilterType("date")}
-              className={`filter-chip ${filterType === "date" ? "active" : ""}`}
-            >
-              📅 Date
-            </button>
-            <button
-              onClick={() => setFilterType("status")}
-              className={`filter-chip ${filterType === "status" ? "active" : ""}`}
-            >
-              ◎ Status
-            </button>
-            <button
-              onClick={() => { setFilterType(null); setSelectedDate(""); setSelectedStatus("all"); }}
-              className={`filter-chip ${filterType === null ? "active" : ""}`}
-            >
-              All Tasks
-            </button>
-          </div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-5">Your Tasks</h2>
 
-          {filterType === "date" && (
-            <div className="mt-3">
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="form-input"
-                style={{ maxWidth: '220px' }}
-              />
-            </div>
-          )}
-
-          {filterType === "status" && (
-            <div className="mt-3 flex gap-2">
-              {["all", "pending", "completed"].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSelectedStatus(s)}
-                  className="text-sm px-4 py-2 rounded-xl font-medium transition-all"
-                  style={{
-                    background: selectedStatus === s ? 'var(--brand-primary-light)' : 'var(--surface-secondary)',
-                    color: selectedStatus === s ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                    border: selectedStatus === s ? '1.5px solid rgba(79,110,247,0.3)' : '1.5px solid var(--border)'
-                  }}
-                >
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ── Task List ── */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
-              Your Tasks
-            </h2>
-            <span className="text-xs font-medium px-2.5 py-1 rounded-full"
-                  style={{ background: 'var(--brand-primary-light)', color: 'var(--brand-primary)' }}>
-              {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-
-          <div className="space-y-3">
-            {filteredTasks.map((t) => (
+        <div className="space-y-6">
+          {tasks.map((t) => {
+            return (
               <TaskCard
                 key={t.id}
                 task={t}
@@ -362,20 +302,14 @@ export default function TasksPage() {
                 onDelete={() => deleteTask(t.id)}
                 onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
               />
-            ))}
+            );
+          })}
 
-            {filteredTasks.length === 0 && (
-              <div className="empty-state section-card">
-                <div className="text-4xl mb-3">📋</div>
-                <p className="font-semibold" style={{ color: 'var(--text-secondary)' }}>
-                  No tasks found
-                </p>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>
-                  {filterType ? "Try a different filter" : "Add your first task above"}
-                </p>
-              </div>
-            )}
-          </div>
+          {tasks.length === 0 && (
+            <p className="text-gray-400 text-center mt-10 text-lg">
+              No tasks yet.
+            </p>
+          )}
         </div>
       </div>
     </div>

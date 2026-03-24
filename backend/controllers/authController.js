@@ -3,10 +3,23 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
 
+const normalizeLoginId = (value) => String(value || "").trim().toLowerCase();
+
 // ------------------------
 // 登录 login
 // ------------------------
 export const login = async (req, res) => {
+  const { username, email, password } = req.body;
+  const loginId = normalizeLoginId(email || username);
+
+  if (!loginId || !password) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM users WHERE LOWER(TRIM(username))=? OR LOWER(TRIM(email))=?",
+      [loginId, loginId]
   const { username, password } = req.body;
 
   try {
@@ -44,17 +57,20 @@ export const login = async (req, res) => {
 // 注册 register（防崩溃）
 // ------------------------
 export const register = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
+  const finalEmail = normalizeLoginId(email || username);
+  const finalUsername = String(username || email || "").trim();
+  const normalizedUsername = normalizeLoginId(finalUsername);
 
-  if (!username || !password) {
+  if (!finalUsername || !finalEmail || !password) {
     return res.status(400).json({ message: "Missing fields" });
   }
 
   try {
     // 检查用户是否已存在
     const [exists] = await pool.query(
-      "SELECT id FROM users WHERE username=?",
-      [username]
+      "SELECT id FROM users WHERE LOWER(TRIM(username))=? OR LOWER(TRIM(email))=?",
+      [normalizedUsername, finalEmail]
     );
 
     if (exists.length > 0) {
@@ -64,6 +80,8 @@ export const register = async (req, res) => {
     const hashed = await bcrypt.hash(password, 10);
 
     await pool.query(
+      "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+      [finalUsername, finalEmail, hashed]
       "INSERT INTO users (username, password) VALUES (?, ?)",
       [username, hashed]
     );

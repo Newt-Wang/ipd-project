@@ -10,6 +10,7 @@ export default function RegisterPage() {
     confirmPassword: ""
   });
 
+  // 输入框变化
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -17,6 +18,7 @@ export default function RegisterPage() {
     });
   };
 
+  // 点击 Sign Up 触发
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,6 +33,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: form.email,
+          email: form.email,
           password: form.password
         })
       });
@@ -43,13 +46,57 @@ export default function RegisterPage() {
       }
 
       alert("Register successful!");
+<<<<<<< HEAD
+      navigate("/login");
+=======
       navigate("/");
+>>>>>>> origin/main
     } catch (err) {
       alert("Error: " + err.message);
     }
   };
 
   return (
+<<<<<<< HEAD
+    <div className="h-screen flex flex-col justify-center items-center bg-white px-6">
+      <h1 className="text-2xl font-bold mb-6">Create Account</h1>
+
+      <form onSubmit={handleSubmit} className="w-full max-w-md">
+        <input
+          name="email"
+          type="email"
+          placeholder="Email address"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full border rounded-lg p-3 mb-4"
+        />
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          className="w-full border rounded-lg p-3 mb-4"
+        />
+
+        <input
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          className="w-full border rounded-lg p-3 mb-6"
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-3 rounded-lg font-bold"
+        >
+          Sign Up
+        </button>
+      </form>
+=======
     <div className="auth-bg px-4">
       <div className="auth-card fade-in-up">
         {/* Brand */}
@@ -130,6 +177,7 @@ export default function RegisterPage() {
           </a>
         </p>
       </div>
+>>>>>>> origin/main
     </div>
   );
 }
