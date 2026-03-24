@@ -12,6 +12,9 @@ export default function TasksPage() {
     due_date: "",
   });
   const [showAddForm, setShowAddForm] = useState(false); // 控制添加任务表单的显示/隐藏
+  const [filterType, setFilterType] = useState(null); // 'date' / 'status'//
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
   const token = localStorage.getItem("token");
 
@@ -77,6 +80,21 @@ export default function TasksPage() {
     setForm((prev) => ({ ...prev, priority: level }));
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    if (filterType === "date") {
+      if (!selectedDate) return true;
+      // due_date from DB is "2026-03-24 14:30:00", selectedDate is "2026-03-24"
+      const taskDate = task.due_date ? task.due_date.slice(0, 10) : null;
+      return taskDate === selectedDate;
+    }
+    if (filterType === "status") {
+      if (selectedStatus === "completed") return Boolean(task.completed);
+      if (selectedStatus === "pending") return !Boolean(task.completed);
+      return true;
+    }
+    return true;
+  });
+
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center py-12 px-4">
       {/* 顶部标题和退出按钮 */}
@@ -95,10 +113,16 @@ export default function TasksPage() {
       {/* 添加任务按钮 */}
       <button
         onClick={() => setShowAddForm(!showAddForm)}
-        className="w-full max-w-2xl py-3 rounded-xl bg-[#0066CC] text-white text-lg font-medium hover:bg-[#0052A3] transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2"
+        className={`w-full max-w-2xl py-3 rounded-xl text-white text-lg font-medium transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2 ${
+          showAddForm
+            ? 'bg-[#CC0000] hover:bg-[#A30000]'
+            : 'bg-[#0066CC] hover:bg-[#0052A3]'
+        }`}
         style={{
           transform: showAddForm ? 'none' : 'translateY(0)',
-          boxShadow: '0 4px 6px -1px rgba(0, 102, 204, 0.3)'
+          boxShadow: showAddForm
+            ? '0 4px 6px -1px rgba(204, 0, 0, 0.3)'
+            : '0 4px 6px -1px rgba(0, 102, 204, 0.3)'
         }}
         onMouseEnter={(e) => {
           if (!showAddForm) {
@@ -200,12 +224,69 @@ export default function TasksPage() {
         </div>
       )}
 
+      <div className="w-full max-w-2xl mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-3">View Tasks by</h2>
+        <div className="flex gap-2 mb-3">
+          <button
+          onClick={() => setFilterType("date")}
+          className={`px-4 py-2 rounded-full text-sm font-medium ${
+            filterType === "date"
+            ? "bg-blue-500 text-white"
+            : "bg-gray-200 text-gray-700"
+          }`}
+          >
+            Date
+          </button>
+          <button
+          onClick={() => setFilterType("status")}
+          className={`px-4 py-2 rounded-full text-sm font-medium ${
+            filterType === "status"
+            ? "bg-blue-500 text-white"
+            : "bg-gray-200 text-gray-700"
+          }`}
+          >
+            Status
+            </button>
+            <button
+            onClick={() => {
+              setFilterType(null);
+              setSelectedDate("");
+              setSelectedStatus("all");
+            }}
+            className="px-4 py-2 rounded-full text-sm font-medium bg-gray-300 text-gray-700"
+            >
+              Show All
+              </button>
+              </div>
+
+              {filterType === "date" && (
+                <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full p-2 border rounded-lg mb-3"
+                />
+              )}
+              
+              {filterType === "status" && (
+                <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full p-2 border rounded-lg mb-3"
+                >
+                  <option value="all">All Tasks</option>
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  </select>
+                )}
+                </div>
+
       {/* 任务列表 */}
       <div className="w-full max-w-2xl">
         <h2 className="text-xl font-semibold text-gray-900 mb-5">Your Tasks</h2>
 
         <div className="space-y-6">
-          {tasks.map((t) => {
+          {filteredTasks.map((t) => {
             return (
               <TaskCard
                 key={t.id}
@@ -217,7 +298,7 @@ export default function TasksPage() {
             );
           })}
 
-          {tasks.length === 0 && (
+          {filteredTasks.length === 0 && (
             <p className="text-gray-400 text-center mt-10 text-lg">
               No tasks yet.
             </p>
