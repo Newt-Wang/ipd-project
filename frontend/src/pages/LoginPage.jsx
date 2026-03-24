@@ -23,7 +23,7 @@ export default function LoginPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username: form.email,   // 关键：后端需要 username
+        username: form.email,
         password: form.password
       })
     });
@@ -35,53 +35,80 @@ export default function LoginPage() {
     }
 
     localStorage.setItem("token", data.token);
-    alert("Login successful!");
-
     navigate("/tasks");
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen px-6">
-      <h1 className="text-2xl font-bold mb-6">Task Manager</h1>
-
-      <form onSubmit={handleSubmit} className="w-full max-w-md">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email address"
-          className="w-full p-3 border rounded mb-4"
-          value={form.email}
-          onChange={handleChange}
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="w-full p-3 border rounded mb-4"
-          value={form.password}
-          onChange={handleChange}
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white font-bold p-3 rounded"
-        >
-          Log In
-        </button>
-
-        <div className="mt-4 text-center">
-          <p className="text-gray-600">
-            Don't have an account?{' '}
-            <a 
-              href="/register" 
-              className="text-blue-500 hover:underline"
-            >
-              Register here
-            </a>
+    <div className="auth-bg px-4">
+      <div className="auth-card fade-in-up">
+        {/* Brand */}
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4"
+               style={{ background: 'linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 11l3 3L22 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            Welcome back
+          </h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+            Sign in to your Task Manager
           </p>
         </div>
-      </form>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+              Email address
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              className="form-input"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                Password
+              </label>
+              <a href="/forgot-password" className="text-xs font-medium"
+                 style={{ color: 'var(--brand-primary)' }}>
+                Forgot password?
+              </a>
+            </div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              className="form-input"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="pt-2">
+            <button type="submit" className="btn-primary">
+              Sign In
+            </button>
+          </div>
+        </form>
+
+        <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+          Don't have an account?{' '}
+          <a href="/register" className="font-semibold" style={{ color: 'var(--brand-primary)' }}>
+            Create one
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
