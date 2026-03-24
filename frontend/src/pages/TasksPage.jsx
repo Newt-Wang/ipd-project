@@ -140,116 +140,157 @@ export default function TasksPage() {
         </div>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      {/* ── Floating Add Button (Fixed Position) ── */}
+      <button
+        onClick={() => setShowAddForm(!showAddForm)}
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          width: '64px',
+          height: '64px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          background: showAddForm
+            ? '#DC2626'
+            : '#5E5CE6',
+          color: 'white',
+          boxShadow: showAddForm
+            ? '0 4px 16px rgba(220, 38, 38, 0.4)'
+            : '0 6px 20px rgba(94, 92, 230, 0.45)',
+          border: 'none',
+          fontSize: '24px',
+          fontWeight: 'bold',
+          zIndex: 99,
+          cursor: 'pointer',
+          transform: showAddForm ? 'rotate(45deg)' : 'rotate(0deg)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = showAddForm ? 'rotate(45deg) scale(1.1)' : 'scale(1.1)';
+          e.currentTarget.style.boxShadow = showAddForm
+            ? '0 6px 24px rgba(220, 38, 38, 0.5)'
+            : '0 8px 28px rgba(94, 92, 230, 0.55)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = showAddForm ? 'rotate(45deg) scale(1)' : 'scale(1)';
+          e.currentTarget.style.boxShadow = showAddForm
+            ? '0 4px 16px rgba(220, 38, 38, 0.4)'
+            : '0 6px 20px rgba(94, 92, 230, 0.45)';
+        }}
+        aria-label={showAddForm ? "Cancel" : "Add New Task"}
+      >
+        +
+      </button>
+
+      <div className="w-full px-4 py-4">
 
         {/* ── Stats Row ── */}
-        <div className="flex gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-4">
           <div style={{ 
-            flex: 1, 
-            background: 'rgba(255, 255, 255, 0.7)',
+            background: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
-            padding: '24px 20px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-            transition: 'all 0.3s ease',
-            borderBottom: '1px solid #E5E5EA'
+            padding: '16px 14px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            transition: 'all 0.2s ease',
+            border: '1px solid rgba(229, 229, 234, 0.6)'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
           }}>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#5E5CE6' }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#5E5CE6' }}>
               {totalTasks}
             </div>
-            <div style={{ fontSize: '12px', fontWeight: '500', marginTop: '4px', color: '#6E6E73' }}>
-              Total Tasks
+            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: '#6E6E73' }}>
+              Total
             </div>
           </div>
           <div style={{ 
-            flex: 1, 
-            background: 'rgba(255, 255, 255, 0.7)',
+            background: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
-            padding: '24px 20px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-            transition: 'all 0.3s ease',
-            borderBottom: '1px solid #E5E5EA'
+            padding: '16px 14px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            transition: 'all 0.2s ease',
+            border: '1px solid rgba(229, 229, 234, 0.6)'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
           }}>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#F59E0B' }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#F59E0B' }}>
               {pendingTasks}
             </div>
-            <div style={{ fontSize: '12px', fontWeight: '500', marginTop: '4px', color: '#6E6E73' }}>
+            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: '#6E6E73' }}>
               In Progress
             </div>
           </div>
           <div style={{ 
-            flex: 1, 
-            background: 'rgba(255, 255, 255, 0.7)',
+            background: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
-            padding: '24px 20px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-            transition: 'all 0.3s ease',
-            borderBottom: '1px solid #E5E5EA'
+            padding: '16px 14px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            transition: 'all 0.2s ease',
+            border: '1px solid rgba(229, 229, 234, 0.6)'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
           }}>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#34C759' }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#34C759' }}>
               {completedTasks}
             </div>
-            <div style={{ fontSize: '12px', fontWeight: '500', marginTop: '4px', color: '#6E6E73' }}>
+            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: '#6E6E73' }}>
               Completed
             </div>
           </div>
           {totalTasks > 0 && (
             <div style={{ 
-              flex: 1, 
-              background: 'rgba(255, 255, 255, 0.7)',
+              background: 'rgba(255, 255, 255, 0.9)',
               backdropFilter: 'blur(10px)',
               borderRadius: '12px',
-              padding: '24px 20px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-              transition: 'all 0.3s ease',
-              borderBottom: '1px solid #E5E5EA',
+              padding: '16px 14px',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+              transition: 'all 0.2s ease',
+              border: '1px solid rgba(229, 229, 234, 0.6)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
             }}>
-              <div style={{ fontSize: '32px', fontWeight: '700', color: '#1D1D1F' }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#1D1D1F' }}>
                 {Math.round((completedTasks / totalTasks) * 100)}%
               </div>
-              <div style={{ fontSize: '12px', fontWeight: '500', marginBottom: '8px', color: '#6E6E73' }}>
+              <div style={{ fontSize: '11px', fontWeight: '500', marginBottom: '6px', color: '#6E6E73' }}>
                 Progress
               </div>
-              <div className="w-full h-1.5 rounded-full" style={{ background: '#E5E5EA' }}>
+              <div className="w-full h-1 rounded-full" style={{ background: '#E5E5EA' }}>
                 <div
-                  className="h-1.5 rounded-full transition-all duration-500"
+                  className="h-1 rounded-full transition-all duration-300"
                   style={{
                     width: `${Math.round((completedTasks / totalTasks) * 100)}%`,
                     background: 'linear-gradient(90deg, #5E5CE6, #34C759)'
@@ -260,71 +301,16 @@ export default function TasksPage() {
           )}
         </div>
 
-        {/* ── Add Task Button ── */}
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          style={{
-            width: '100%',
-            padding: '14px',
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            transition: 'all 0.3s ease',
-            background: showAddForm
-              ? 'rgba(255, 235, 238, 0.8)'
-              : '#5E5CE6',
-            color: showAddForm ? '#DC2626' : 'white',
-            boxShadow: showAddForm
-              ? '0 2px 4px rgba(220, 38, 38, 0.2)'
-              : '0 4px 16px rgba(94, 92, 230, 0.4)',
-            border: 'none',
-            fontSize: '14px',
-            fontWeight: '600',
-            marginBottom: '24px',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-          }}
-          onMouseEnter={(e) => {
-            if (!showAddForm) {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(94, 92, 230, 0.45)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!showAddForm) {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(94, 92, 230, 0.4)';
-            }
-          }}
-        >
-          {showAddForm ? (
-            <>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12" stroke="#DC2626" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              Cancel
-            </>
-          ) : (
-            <>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                <circle cx="12" cy="12" r="10" fill="currentColor"/>
-                <path d="M12 8v8M8 12h8" stroke="#5E5CE6" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              Add New Task
-            </>
-          )}
-        </button>
-
         {/* ── Add Task Form ── */}
         {showAddForm && (
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.7)',
+            background: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(10px)',
-            borderRadius: '12px',
-            padding: '24px',
-            marginBottom: '24px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+            borderRadius: '16px',
+            padding: '20px',
+            marginBottom: '20px',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+            border: '1px solid rgba(229, 229, 234, 0.6)'
           }}>
             <h2 className="text-base font-semibold mb-5" style={{ color: '#1D1D1F' }}>
               New Task
@@ -452,12 +438,13 @@ export default function TasksPage() {
 
         {/* ── Filter Section ── */}
         <div style={{ 
-          background: 'rgba(255, 255, 255, 0.7)',
+          background: 'rgba(255, 255, 255, 0.9)',
           backdropFilter: 'blur(10px)',
           borderRadius: '12px',
-          padding: '20px',
-          marginBottom: '24px',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+          padding: '16px',
+          marginBottom: '16px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+          border: '1px solid rgba(229, 229, 234, 0.6)'
         }}>
           <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: '#6E6E73' }}>
             Filter by
@@ -670,17 +657,18 @@ export default function TasksPage() {
             </h2>
             <span style={{ 
               fontSize: '12px',
-              fontWeight: '500',
+              fontWeight: '600',
               padding: '4px 10px',
               borderRadius: '12px',
-              background: 'rgba(79, 110, 247, 0.1)',
-              color: '#4F6EF7'
+              background: 'rgba(94, 92, 230, 0.1)',
+              color: '#5E5CE6',
+              boxShadow: '0 2px 6px rgba(94, 92, 230, 0.12)'
             }}>
               {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
             </span>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {filteredTasks.map((t) => (
               <TaskCard
                 key={t.id}
@@ -692,20 +680,21 @@ export default function TasksPage() {
             ))}
 
             {filteredTasks.length === 0 && (
-              <div style={{ 
-                background: 'rgba(255, 255, 255, 0.7)',
+              <div className="col-span-full" style={{ 
+                background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: '12px',
                 padding: '40px 20px',
                 textAlign: 'center',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                border: '1px solid rgba(229, 229, 234, 0.6)'
               }}>
                 <div className="text-4xl mb-3">📋</div>
-                <p className="font-semibold" style={{ color: '#6E6E73' }}>
+                <p className="font-semibold text-sm" style={{ color: '#6E6E73' }}>
                   No tasks found
                 </p>
-                <p className="text-sm mt-1" style={{ color: '#8E8E93' }}>
-                  {filterType ? "Try a different filter" : "Add your first task above"}
+                <p className="text-xs mt-1" style={{ color: '#8E8E93' }}>
+                  {filterType ? "Try a different filter" : "Add your first task by clicking the + button"}
                 </p>
               </div>
             )}

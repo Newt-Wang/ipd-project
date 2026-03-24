@@ -29,11 +29,22 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
     && new Date(task.due_date) < new Date();
 
   return (
-    <div className={`p-5 mb-4 rounded-xl transition-all ${statusDone ? 'opacity-60' : ''}`} style={{ 
-      background: 'rgba(255, 255, 255, 0.7)',
+    <div className={`p-4 rounded-xl transition-all ${statusDone ? 'opacity-60' : ''}`} style={{ 
+      background: 'rgba(255, 255, 255, 0.9)',
       backdropFilter: 'blur(10px)',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+      border: '1px solid rgba(229, 229, 234, 0.6)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
+      transition: 'all 0.2s ease',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    }} onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+    }} onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
     }}>
       <div className="flex items-start gap-4">
 
@@ -68,10 +79,10 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
 
         {/* Content */}
         <div className="flex-1 min-w-0" onClick={onClick} style={{ cursor: 'pointer' }}>
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-2">
             <span
               style={{
-                fontSize: '16px',
+                fontSize: '14px',
                 fontWeight: '600',
                 lineHeight: '1.4',
                 color: statusDone ? '#8E8E93' : '#1D1D1F',
@@ -85,17 +96,17 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
               flexShrink: 0,
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '4px'
             }}>
               <span style={{ 
-                width: '8px',
-                height: '8px',
+                width: '6px',
+                height: '6px',
                 borderRadius: '50%',
                 background: pCfg.bg === '#FEE2E2' ? '#EF4444' : 
                            pCfg.bg === '#FEF3C7' ? '#F59E0B' : '#10B981'
               }}/>
               <span style={{ 
-                fontSize: '12px',
+                fontSize: '10px',
                 fontWeight: '500',
                 color: pCfg.color
               }}>
@@ -106,9 +117,9 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
 
           {task.description && (
             <p style={{ 
-              marginTop: '8px',
-              fontSize: '14px',
-              lineHeight: '1.5',
+              marginTop: '6px',
+              fontSize: '12px',
+              lineHeight: '1.4',
               color: '#8E8E93',
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -121,11 +132,11 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
 
           {/* Meta row */}
           <div style={{ 
-            marginTop: '12px',
+            marginTop: '8px',
             display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            fontSize: '12px'
+            flexDirection: 'column',
+            gap: '4px',
+            fontSize: '10px'
           }}>
             {task.created_at && (
               <span style={{ color: '#8E8E93' }}>
@@ -137,13 +148,13 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
                 style={{ 
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px',
+                  gap: '3px',
                   fontWeight: '500',
                   color: isOverdue ? 'rgba(255, 149, 0, 0.7)' : '#6E6E73',
                   whiteSpace: 'nowrap'
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
                   <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
@@ -164,21 +175,21 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             }}
             style={{
               flexShrink: 0,
-              opacity: 0.6,
-              transition: 'all 0.3s ease',
+              opacity: 0.5,
+              transition: 'all 0.2s ease',
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              padding: '4px'
+              padding: '2px'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.opacity = 1;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = 0.6;
+              e.currentTarget.style.opacity = 0.5;
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
