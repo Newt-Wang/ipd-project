@@ -8,10 +8,9 @@ export default function EditTaskPage() {
 
   const [task, setTask] = useState({
     title: "",
-    notes: "",
-    due: "",
+    description: "",
     priority: "Medium",
-    category: "Study",
+    due_date: "",
   });
 
   // 获取现有任务信息
@@ -25,10 +24,9 @@ export default function EditTaskPage() {
         if (found) {
           setTask({
             title: found.title,
-            notes: found.description || "",
-            due: found.due_date || "",
+            description: found.description || "",
             priority: found.priority || "Medium",
-            category: found.category || "Study",
+            due_date: found.due_date || "",
           });
         }
       });
@@ -79,22 +77,11 @@ export default function EditTaskPage() {
         />
 
         <textarea
-          value={task.notes}
-          onChange={(e) => setTask({ ...task, notes: e.target.value })}
+          value={task.description}
+          onChange={(e) => setTask({ ...task, description: e.target.value })}
           placeholder="Notes (optional)"
           className="w-full border px-4 py-3 rounded-xl h-24"
         />
-
-        {/* 其他字段（Due date / Priority / Category） */}
-        <div>
-          <label className="font-medium">Due date</label>
-          <input
-            type="datetime-local"
-            value={task.due}
-            onChange={(e) => setTask({ ...task, due: e.target.value })}
-            className="w-full border mt-2 px-4 py-3 rounded-xl"
-          />
-        </div>
 
         <div>
           <label className="font-medium">Priority</label>
@@ -110,16 +97,13 @@ export default function EditTaskPage() {
         </div>
 
         <div>
-          <label className="font-medium">Category</label>
-          <select
-            value={task.category}
-            onChange={(e) => setTask({ ...task, category: e.target.value })}
+          <label className="font-medium">Due Date</label>
+          <input
+            type="datetime-local"
+            value={task.due_date}
+            onChange={(e) => setTask({ ...task, due_date: e.target.value })}
             className="w-full border mt-2 px-4 py-3 rounded-xl"
-          >
-            <option>Work</option>
-            <option>Study</option>
-            <option>Life</option>
-          </select>
+          />
         </div>
       </div>
 

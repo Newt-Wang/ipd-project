@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import TasksPage from "./pages/TasksPage";
+import EditTaskPage from "./pages/EditTaskPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/tasks" element={<TasksPage />} />
+        <Route path="/tasks/edit/:id" element={<EditTaskPage />} />
       </Routes>
     </Router>
   );
