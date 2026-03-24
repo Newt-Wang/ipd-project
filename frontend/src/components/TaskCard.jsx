@@ -19,9 +19,9 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
   };
 
   const priorityConfig = {
-    High:   { cls: 'badge-high',   label: 'High',   dot: '#EF4444' },
-    Medium: { cls: 'badge-medium', label: 'Medium', dot: '#F59E0B' },
-    Low:    { cls: 'badge-low',    label: 'Low',    dot: '#10B981' },
+    High:   { cls: 'badge-high',   label: 'High',   bg: '#FEE2E2', color: '#991B1B' },
+    Medium: { cls: 'badge-medium', label: 'Medium', bg: '#FEF3C7', color: '#92400E' },
+    Low:    { cls: 'badge-low',    label: 'Low',    bg: '#D1FAE5', color: '#065F46' },
   };
   const pCfg = priorityConfig[task.priority] || priorityConfig.Medium;
 
@@ -29,8 +29,13 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
     && new Date(task.due_date) < new Date();
 
   return (
-    <div className={`task-card p-4 fade-in-up ${statusDone ? 'done' : ''}`}>
-      <div className="flex items-start gap-3">
+    <div className={`p-5 mb-4 rounded-xl transition-all ${statusDone ? 'opacity-60' : ''}`} style={{ 
+      background: 'rgba(255, 255, 255, 0.7)',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+    }}>
+      <div className="flex items-start gap-4">
 
         {/* Checkbox */}
         <button
@@ -38,15 +43,24 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             e.stopPropagation();
             onToggleStatus && onToggleStatus();
           }}
-          className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
           style={{
-            borderColor: statusDone ? 'var(--success)' : 'var(--border)',
-            background: statusDone ? 'var(--success)' : 'transparent',
+            flexShrink: 0,
+            marginTop: '2px',
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            border: '2px solid #E5E5EA',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            background: statusDone ? '#34C759' : 'transparent',
+            cursor: 'pointer'
           }}
           aria-label="Toggle task status"
         >
           {statusDone && (
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           )}
@@ -54,75 +68,122 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
 
         {/* Content */}
         <div className="flex-1 min-w-0" onClick={onClick} style={{ cursor: 'pointer' }}>
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start justify-between gap-3">
             <span
-              className="text-sm font-semibold leading-snug"
               style={{
-                color: statusDone ? 'var(--text-tertiary)' : 'var(--text-primary)',
+                fontSize: '16px',
+                fontWeight: '600',
+                lineHeight: '1.4',
+                color: statusDone ? '#8E8E93' : '#1D1D1F',
                 textDecoration: statusDone ? 'line-through' : 'none',
+                flex: 1
               }}
             >
               {task.title || "(Untitled)"}
             </span>
-            <span className={pCfg.cls} style={{ flexShrink: 0 }}>
-              {pCfg.label}
-            </span>
+            <div style={{ 
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <span style={{ 
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: pCfg.bg === '#FEE2E2' ? '#EF4444' : 
+                           pCfg.bg === '#FEF3C7' ? '#F59E0B' : '#10B981'
+              }}/>
+              <span style={{ 
+                fontSize: '12px',
+                fontWeight: '500',
+                color: pCfg.color
+              }}>
+                {pCfg.label}
+              </span>
+            </div>
           </div>
 
           {task.description && (
-            <p className="mt-1 text-xs leading-relaxed line-clamp-2"
-               style={{ color: 'var(--text-tertiary)' }}>
+            <p style={{ 
+              marginTop: '8px',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              color: '#8E8E93',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden'
+            }}>
               {task.description}
             </p>
           )}
 
           {/* Meta row */}
-          <div className="mt-2.5 flex items-center gap-3 text-xs">
+          <div style={{ 
+            marginTop: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontSize: '12px'
+          }}>
             {task.created_at && (
-              <span style={{ color: 'var(--text-tertiary)' }}>
+              <span style={{ color: '#8E8E93' }}>
                 Created {formatTime(task.created_at)}
               </span>
             )}
             {task.due_date && (
               <span
-                className="flex items-center gap-1 font-medium"
-                style={{ color: isOverdue ? '#EF4444' : 'var(--text-secondary)' }}
+                style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontWeight: '500',
+                  color: isOverdue ? 'rgba(255, 149, 0, 0.7)' : '#6E6E73',
+                  whiteSpace: 'nowrap'
+                }}
               >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
                   <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-                {isOverdue ? 'Overdue · ' : ''}{formatTime(task.due_date)}
+                {isOverdue ? 'Overdue' : ''}{isOverdue && ' · '}{formatTime(task.due_date)}
               </span>
             )}
           </div>
         </div>
-      </div>
 
-      {/* Delete */}
-      {onDelete && (
-        <div className="mt-3 pt-3 flex justify-end"
-             style={{ borderTop: '1px solid var(--border)' }}>
+        {/* Delete Button */}
+        {onDelete && (
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onDelete();
+              if (window.confirm('Are you sure you want to delete this task?')) {
+                onDelete();
+              }
             }}
-            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl transition-all"
             style={{
-              color: 'var(--danger)',
-              background: 'var(--danger-light)',
+              flexShrink: 0,
+              opacity: 0.6,
+              transition: 'all 0.3s ease',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px'
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#FEE2E2'}
-            onMouseLeave={e => e.currentTarget.style.background = 'var(--danger-light)'}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = 1;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = 0.6;
+            }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            Delete
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
