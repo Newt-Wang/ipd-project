@@ -1,41 +1,30 @@
 export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
-  // 确保 statusDone 是布尔值，避免显示"0"
+  // 确保 statusDone is boolean，避免显示"0"
   const statusDone = Boolean(task.completed);
   
-  // 统一时间格式化函数
+  
+
+  
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-    // 检查是否是今天
+
     if (dateOnly.getTime() === today.getTime()) {
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-      return `今天 ${hours}:${minutes}`;
+      return `Today ${hours}:${minutes}`;
     }
-    
-    // 检查是否是今年
+
     if (date.getFullYear() === now.getFullYear()) {
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
-      return `${month}月${day}日`;
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
-    
-    // 去年及更早
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}/${month}/${day}`;
+
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  // 获取实时时间
-  const getCurrentTime = () => {
-    return formatTime(new Date());
-  };
-
-  // 获取优先级标签的样式
+  //grt thr stylr of priority
   const getPriorityBadgeStyle = (priority) => {
     switch (priority) {
       case 'High':
@@ -91,7 +80,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
           <div className="mt-4 flex flex-col gap-2 text-[12px]">
             <div className="flex items-center justify-between">
               <div className="text-slate-400">
-                {getCurrentTime()}
+                {task.created_at ? formatTime(task.created_at) : ""}
               </div>
               {/* 显示优先级 */}
               <div>
