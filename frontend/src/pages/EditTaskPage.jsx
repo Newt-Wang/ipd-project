@@ -25,6 +25,8 @@ export default function EditTaskPage() {
   };
 
   // 获取现有任务信息
+  });
+
   useEffect(() => {
     fetch(`http://localhost:4000/api/tasks`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -39,6 +41,7 @@ export default function EditTaskPage() {
             priority: found.priority || "Medium",
             due_date: toDatetimeLocal(found.due_date),
             reminder_minutes_before: found.reminder_minutes_before || 0,
+            due_date: found.due_date || "",
           });
         }
       });
@@ -56,7 +59,10 @@ export default function EditTaskPage() {
     }).then(() => navigate("/tasks"));
   };
 
+<<<<<<< HEAD
   // 删除任务
+=======
+>>>>>>> origin/main
   const deleteTask = () => {
     fetch(`http://localhost:4000/api/tasks/${id}`, {
       method: "DELETE",
@@ -65,6 +71,7 @@ export default function EditTaskPage() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="px-6 pt-8 pb-20">
       {/* 顶部 */}
       <div className="flex justify-between items-center mb-6">
@@ -142,6 +149,138 @@ export default function EditTaskPage() {
       >
         Delete Task
       </button>
+=======
+    <div style={{ background: 'var(--surface-secondary)', minHeight: '100vh' }}>
+
+      {/* ── Top Bar ── */}
+      <nav className="navbar">
+        <div className="max-w-2xl mx-auto px-6 h-16 flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl transition-all"
+            style={{ color: 'var(--text-secondary)', background: 'var(--surface-secondary)', border: '1.5px solid var(--border)' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Back
+          </button>
+
+          <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+            Edit Task
+          </span>
+
+          <button
+            onClick={saveTask}
+            className="text-sm font-semibold px-4 py-2 rounded-xl transition-all"
+            style={{
+              background: 'linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)',
+              color: 'white',
+              boxShadow: '0 2px 8px rgba(79,110,247,0.35)'
+            }}
+          >
+            Save
+          </button>
+        </div>
+      </nav>
+
+      {/* ── Form ── */}
+      <div className="max-w-2xl mx-auto px-6 py-8">
+        <div className="section-card p-6 fade-in-up">
+          <div className="space-y-5">
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                Task Title
+              </label>
+              <input
+                value={task.title}
+                onChange={(e) => setTask({ ...task, title: e.target.value })}
+                placeholder="Task title"
+                className="form-input"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                Description
+              </label>
+              <textarea
+                value={task.description}
+                onChange={(e) => setTask({ ...task, description: e.target.value })}
+                placeholder="Notes (optional)"
+                className="form-input"
+                rows={4}
+                style={{ resize: 'none', lineHeight: '1.6' }}
+              />
+            </div>
+
+            {/* Priority */}
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                Priority
+              </label>
+              <div className="flex gap-2">
+                {[
+                  { label: "High",   color: "#EF4444", bg: "#FEE2E2" },
+                  { label: "Medium", color: "#F59E0B", bg: "#FEF3C7" },
+                  { label: "Low",    color: "#10B981", bg: "#D1FAE5" },
+                ].map(({ label, color, bg }) => {
+                  const active = task.priority === label;
+                  return (
+                    <button
+                      type="button"
+                      key={label}
+                      onClick={() => setTask(prev => ({ ...prev, priority: label }))}
+                      className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                      style={{
+                        background: active ? bg : 'var(--surface-secondary)',
+                        color: active ? color : 'var(--text-secondary)',
+                        border: active ? `1.5px solid ${color}40` : '1.5px solid var(--border)',
+                        boxShadow: active ? `0 2px 8px ${color}20` : 'none'
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Due Date */}
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                Due Date
+              </label>
+              <input
+                type="datetime-local"
+                value={task.due_date}
+                onChange={(e) => setTask({ ...task, due_date: e.target.value })}
+                className="form-input"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* ── Delete ── */}
+        <button
+          onClick={deleteTask}
+          className="w-full mt-5 py-3 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+          style={{
+            background: 'var(--danger-light)',
+            color: 'var(--danger)',
+            border: '1.5px solid rgba(239,68,68,0.2)'
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#FEE2E2'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--danger-light)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Delete Task
+        </button>
+      </div>
+>>>>>>> origin/main
     </div>
   );
 }

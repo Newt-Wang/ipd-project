@@ -34,6 +34,8 @@ export const createTask = async (req, res) => {
        (title, description, priority, due_date, user_id, reminder_minutes_before)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [title, description, priority, formattedDueDate, userId, reminder_minutes_before]
+      "INSERT INTO tasks (title, description, priority, due_date, user_id) VALUES (?, ?, ?, ?, ?)",
+      [title, description, priority, formattedDueDate, userId]
     );
     res.json({ message: "Task created" });
   } catch (err) {
@@ -54,6 +56,7 @@ export const updateTask = async (req, res) => {
     due_date,
     reminder_minutes_before = 0,
   } = req.body;
+  const { title, description, completed, priority = "Medium", due_date } = req.body;
 
   // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
   let formattedDueDate = null;
@@ -77,6 +80,8 @@ export const updateTask = async (req, res) => {
         id,
         userId,
       ]
+      "UPDATE tasks SET title=?, description=?, completed=?, priority=?, due_date=? WHERE id=? AND user_id=?",
+      [title, description, completed, priority, formattedDueDate, id, userId]
     );
     res.json({ message: "Task updated" });
   } catch (err) {

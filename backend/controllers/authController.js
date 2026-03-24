@@ -20,6 +20,12 @@ export const login = async (req, res) => {
     const [rows] = await pool.query(
       "SELECT * FROM users WHERE LOWER(TRIM(username))=? OR LOWER(TRIM(email))=?",
       [loginId, loginId]
+  const { username, password } = req.body;
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM users WHERE username=?",
+      [username]
     );
 
     if (rows.length === 0) {
@@ -76,6 +82,8 @@ export const register = async (req, res) => {
     await pool.query(
       "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
       [finalUsername, finalEmail, hashed]
+      "INSERT INTO users (username, password) VALUES (?, ?)",
+      [username, hashed]
     );
 
     return res.json({ message: "User registered" });
