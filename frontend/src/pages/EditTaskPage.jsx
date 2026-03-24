@@ -10,6 +10,7 @@ export default function EditTaskPage() {
     title: "",
     description: "",
     priority: "Medium",
+    due_date: "",
   });
 
   // 获取现有任务信息
@@ -25,6 +26,7 @@ export default function EditTaskPage() {
             title: found.title,
             description: found.description || "",
             priority: found.priority || "Medium",
+            due_date: found.due_date || "",
           });
         }
       });
@@ -92,6 +94,16 @@ export default function EditTaskPage() {
             <option>Medium</option>
             <option>Low</option>
           </select>
+        </div>
+
+        <div>
+          <label className="font-medium">Due Date</label>
+          <input
+            type="datetime-local"
+            value={task.due_date}
+            onChange={(e) => setTask({ ...task, due_date: e.target.value })}
+            className="w-full border mt-2 px-4 py-3 rounded-xl"
+          />
         </div>
       </div>
 
