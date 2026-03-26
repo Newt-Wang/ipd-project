@@ -584,56 +584,7 @@ export default function TasksPage() {
                 }}/>
               )}
             </button>
-            <button
-              onClick={() => {
-                const today = new Date();
-                const todayStr = today.toISOString().slice(0, 10);
-                setFilterType("date");
-                setSelectedDate(todayStr);
-              }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'all 0.3s ease',
-                background: 'transparent',
-                color: isDark ? '#F5F5F7' : '#6E6E73',
-                border: 'none',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-              }}
-            >
-              Today
-            </button>
-            <button
-              onClick={() => {
-                // 计算本周的开始和结束日期
-                const today = new Date();
-                const dayOfWeek = today.getDay();
-                const startOfWeek = new Date(today);
-                startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // 调整到周一
-                const startOfWeekStr = startOfWeek.toISOString().slice(0, 10);
-                setFilterType("date");
-                setSelectedDate(startOfWeekStr);
-              }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'all 0.3s ease',
-                background: 'transparent',
-                color: isDark ? '#F5F5F7' : '#6E6E73',
-                border: 'none',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-              }}
-            >
-              This Week
-            </button>
+
           </div>
 
           {filterType === "date" && (
