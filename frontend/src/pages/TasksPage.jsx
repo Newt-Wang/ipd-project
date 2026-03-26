@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 import TaskCard from "../components/TaskCard";
 
 export default function TasksPage() {
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState({
     title: "",
@@ -94,16 +96,16 @@ export default function TasksPage() {
 
   return (
     <div style={{ 
-      background: '#F9F9FB', 
+      background: isDark ? '#0A0A0A' : '#F9F9FB', 
       minHeight: '100vh',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
     }}>
 
       {/* ── Navbar ── */}
       <nav style={{ 
-        background: 'rgba(255, 255, 255, 0.7)',
+        background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'rgba(255, 255, 255, 0.7)',
         backdropFilter: 'blur(10px)',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+        boxShadow: isDark ? '0 1px 3px rgba(0, 0, 0, 0.3)' : '0 1px 3px rgba(0, 0, 0, 0.05)',
         position: 'sticky',
         top: 0,
         zIndex: 100
@@ -117,26 +119,50 @@ export default function TasksPage() {
                 <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span className="font-bold text-base" style={{ color: '#1D1D1F' }}>
+            <span className="font-bold text-base" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
               Task Manager
             </span>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-xl transition-all"
-            style={{
-              color: '#6E6E73',
-              background: 'rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(243, 244, 246, 0.9)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)'; }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Logout
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
+              style={{
+                color: isDark ? '#F5F5F7' : '#6E6E73',
+                background: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                boxShadow: isDark ? '0 1px 2px rgba(0, 0, 0, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.05)'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(40, 40, 40, 0.9)' : 'rgba(243, 244, 246, 0.9)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'; }}
+            >
+              {isDark ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-xl transition-all"
+              style={{
+                color: isDark ? '#F5F5F7' : '#6E6E73',
+                background: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                boxShadow: isDark ? '0 1px 2px rgba(0, 0, 0, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.05)'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(40, 40, 40, 0.9)' : 'rgba(243, 244, 246, 0.9)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'; }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Logout
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -190,74 +216,74 @@ export default function TasksPage() {
         {/* ── Stats Row ── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-4">
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.9)',
+            background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
             padding: '16px 14px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            boxShadow: isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)',
             transition: 'all 0.2s ease',
-            border: '1px solid rgba(229, 229, 234, 0.6)'
+            border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+            e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
+            e.currentTarget.style.boxShadow = isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)';
           }}>
             <div style={{ fontSize: '24px', fontWeight: '700', color: '#5E5CE6' }}>
               {totalTasks}
             </div>
-            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: '#6E6E73' }}>
+            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
               Total
             </div>
           </div>
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.9)',
+            background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
             padding: '16px 14px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            boxShadow: isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)',
             transition: 'all 0.2s ease',
-            border: '1px solid rgba(229, 229, 234, 0.6)'
+            border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+            e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
+            e.currentTarget.style.boxShadow = isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)';
           }}>
             <div style={{ fontSize: '24px', fontWeight: '700', color: '#F59E0B' }}>
               {pendingTasks}
             </div>
-            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: '#6E6E73' }}>
+            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
               In Progress
             </div>
           </div>
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.9)',
+            background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
             padding: '16px 14px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+            boxShadow: isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)',
             transition: 'all 0.2s ease',
-            border: '1px solid rgba(229, 229, 234, 0.6)'
+            border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+            e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
+            e.currentTarget.style.boxShadow = isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)';
           }}>
             <div style={{ fontSize: '24px', fontWeight: '700', color: '#34C759' }}>
               {completedTasks}
             </div>
-            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: '#6E6E73' }}>
+            <div style={{ fontSize: '11px', fontWeight: '500', marginTop: '2px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
               Completed
             </div>
           </div>
@@ -288,7 +314,7 @@ export default function TasksPage() {
               <div style={{ fontSize: '11px', fontWeight: '500', marginBottom: '6px', color: '#6E6E73' }}>
                 Progress
               </div>
-              <div className="w-full h-1 rounded-full" style={{ background: '#E5E5EA' }}>
+              <div className="w-full h-1 rounded-full" style={{ background: isDark ? '#333333' : '#E5E5EA' }}>
                 <div
                   className="h-1 rounded-full transition-all duration-300"
                   style={{
@@ -304,15 +330,15 @@ export default function TasksPage() {
         {/* ── Add Task Form ── */}
         {showAddForm && (
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: isDark ? 'rgba(30, 30, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(10px)',
             borderRadius: '16px',
             padding: '20px',
             marginBottom: '20px',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-            border: '1px solid rgba(229, 229, 234, 0.6)'
+            boxShadow: isDark ? '0 4px 16px rgba(0, 0, 0, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.08)',
+            border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
           }}>
-            <h2 className="text-base font-semibold mb-5" style={{ color: '#1D1D1F' }}>
+            <h2 className="text-base font-semibold mb-5" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
               New Task
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -321,9 +347,11 @@ export default function TasksPage() {
                   width: '100%',
                   padding: '12px 16px',
                   borderRadius: '12px',
-                  border: '1px solid #E5E5EA',
+                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
                   fontSize: '14px',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
+                  background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'white',
+                  color: isDark ? '#F5F5F7' : '#1D1D1F'
                 }}
                 placeholder="Task title"
                 value={form.title}
@@ -335,11 +363,13 @@ export default function TasksPage() {
                   width: '100%',
                   padding: '12px 16px',
                   borderRadius: '12px',
-                  border: '1px solid #E5E5EA',
+                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
                   fontSize: '14px',
                   resize: 'none',
                   lineHeight: '1.6',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
+                  background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'white',
+                  color: isDark ? '#F5F5F7' : '#1D1D1F'
                 }}
                 rows={3}
                 placeholder="Description (optional)"
@@ -349,7 +379,7 @@ export default function TasksPage() {
 
               {/* Priority */}
               <div>
-                <p className="text-sm font-medium mb-2" style={{ color: '#6E6E73' }}>
+                <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
                   Priority
                 </p>
                 <div className="flex gap-2">
@@ -371,9 +401,9 @@ export default function TasksPage() {
                           fontSize: '14px',
                           fontWeight: '600',
                           transition: 'all 0.3s ease',
-                          background: active ? bg : 'rgba(255, 255, 255, 0.8)',
-                          color: active ? color : '#6E6E73',
-                          border: active ? `1.5px solid ${color}40` : '1.5px solid #E5E5EA',
+                          background: active ? bg : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                          color: active ? color : (isDark ? '#F5F5F7' : '#6E6E73'),
+                          border: active ? `1.5px solid ${color}40` : (isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA'),
                           boxShadow: active ? `0 2px 8px ${color}20` : 'none',
                           fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
                         }}
@@ -387,7 +417,7 @@ export default function TasksPage() {
 
               {/* Due Date */}
               <div>
-                <p className="text-sm font-medium mb-2" style={{ color: '#6E6E73' }}>
+                <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
                   Due Date
                 </p>
                 <input
@@ -438,15 +468,15 @@ export default function TasksPage() {
 
         {/* ── Filter Section ── */}
         <div style={{ 
-          background: 'rgba(255, 255, 255, 0.9)',
+          background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
           backdropFilter: 'blur(10px)',
           borderRadius: '12px',
           padding: '16px',
           marginBottom: '16px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-          border: '1px solid rgba(229, 229, 234, 0.6)'
+          boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
+          border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
         }}>
-          <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: '#6E6E73' }}>
+          <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
             Filter by
           </p>
           
@@ -470,7 +500,7 @@ export default function TasksPage() {
                 fontWeight: '500',
                 transition: 'all 0.3s ease',
                 background: filterType === null ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === null ? '#5E5CE6' : '#6E6E73',
+                color: filterType === null ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
                 border: 'none',
                 position: 'relative',
                 whiteSpace: 'nowrap',
@@ -501,7 +531,7 @@ export default function TasksPage() {
                 fontWeight: '500',
                 transition: 'all 0.3s ease',
                 background: filterType === "date" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === "date" ? '#5E5CE6' : '#6E6E73',
+                color: filterType === "date" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
                 border: 'none',
                 position: 'relative',
                 whiteSpace: 'nowrap',
@@ -532,7 +562,7 @@ export default function TasksPage() {
                 fontWeight: '500',
                 transition: 'all 0.3s ease',
                 background: filterType === "status" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === "status" ? '#5E5CE6' : '#6E6E73',
+                color: filterType === "status" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
                 border: 'none',
                 position: 'relative',
                 whiteSpace: 'nowrap',
@@ -568,7 +598,7 @@ export default function TasksPage() {
                 fontWeight: '500',
                 transition: 'all 0.3s ease',
                 background: 'transparent',
-                color: '#6E6E73',
+                color: isDark ? '#F5F5F7' : '#6E6E73',
                 border: 'none',
                 position: 'relative',
                 whiteSpace: 'nowrap',
@@ -595,7 +625,7 @@ export default function TasksPage() {
                 fontWeight: '500',
                 transition: 'all 0.3s ease',
                 background: 'transparent',
-                color: '#6E6E73',
+                color: isDark ? '#F5F5F7' : '#6E6E73',
                 border: 'none',
                 position: 'relative',
                 whiteSpace: 'nowrap',
@@ -652,7 +682,7 @@ export default function TasksPage() {
         {/* ── Task List ── */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold" style={{ color: '#1D1D1F' }}>
+            <h2 className="text-base font-semibold" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
               Your Tasks
             </h2>
             <span style={{ 
@@ -681,19 +711,19 @@ export default function TasksPage() {
 
             {filteredTasks.length === 0 && (
               <div className="col-span-full" style={{ 
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: '12px',
                 padding: '40px 20px',
                 textAlign: 'center',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-                border: '1px solid rgba(229, 229, 234, 0.6)'
+                boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
+                border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
               }}>
                 <div className="text-4xl mb-3">📋</div>
-                <p className="font-semibold text-sm" style={{ color: '#6E6E73' }}>
+                <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
                   No tasks found
                 </p>
-                <p className="text-xs mt-1" style={{ color: '#8E8E93' }}>
+                <p className="text-xs mt-1" style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
                   {filterType ? "Try a different filter" : "Add your first task by clicking the + button"}
                 </p>
               </div>
