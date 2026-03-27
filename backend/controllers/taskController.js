@@ -10,18 +10,12 @@ export const getTasks = async (req, res) => {
   res.json(tasks);
 };
 
-// 新建任务
+// 新建任务（增加 priority 和 due_date）
 export const createTask = async (req, res) => {
   const userId = req.user.id;
-  const {
-    title,
-    description,
-    priority = "Medium",
-    due_date,
-    reminder_minutes_before = 0,
-  } = req.body;
+  const { title, description, priority = "Medium", due_date } = req.body;
 
-  // 转换日期格式
+  // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
   let formattedDueDate = null;
   if (due_date) {
     const date = new Date(due_date);
@@ -30,10 +24,8 @@ export const createTask = async (req, res) => {
 
   try {
     await pool.query(
-      `INSERT INTO tasks
-       (title, description, priority, due_date, user_id, reminder_minutes_before)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [title, description, priority, formattedDueDate, userId, reminder_minutes_before]
+      "INSERT INTO tasks (title, description, priority, due_date, user_id) VALUES (?, ?, ?, ?, ?)",
+      [title, description, priority, formattedDueDate, userId]
     );
     res.json({ message: "Task created" });
   } catch (err) {
@@ -42,20 +34,13 @@ export const createTask = async (req, res) => {
   }
 };
 
-// 更新任务
+// 更新任务（增加 priority 和 due_date）
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
-  const {
-    title,
-    description,
-    completed,
-    priority = "Medium",
-    due_date,
-    reminder_minutes_before = 0,
-  } = req.body;
+  const { title, description, completed, priority = "Medium", due_date } = req.body;
 
-  // 转换日期格式
+  // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
   let formattedDueDate = null;
   if (due_date) {
     const date = new Date(due_date);
@@ -64,19 +49,8 @@ export const updateTask = async (req, res) => {
 
   try {
     await pool.query(
-      `UPDATE tasks
-       SET title=?, description=?, completed=?, priority=?, due_date=?, reminder_minutes_before=?, reminder_sent_at=NULL
-       WHERE id=? AND user_id=?`,
-      [
-        title,
-        description,
-        completed,
-        priority,
-        formattedDueDate,
-        reminder_minutes_before,
-        id,
-        userId,
-      ]
+      "UPDATE tasks SET title=?, description=?, completed=?, priority=?, due_date=? WHERE id=? AND user_id=?",
+      [title, description, completed, priority, formattedDueDate, id, userId]
     );
     res.json({ message: "Task updated" });
   } catch (err) {
