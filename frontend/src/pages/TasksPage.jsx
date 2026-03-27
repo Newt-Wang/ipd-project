@@ -11,12 +11,14 @@ export default function TasksPage() {
     title: "",
     description: "",
     priority: "Medium",
+    category: "Work",
     due_date: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
-  const [filterType, setFilterType] = useState(null); // 'date' / 'status'
+  const [filterType, setFilterType] = useState(null); // 'date' / 'status' / 'category'
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const playClickSound = () => {
     try {
@@ -73,7 +75,7 @@ export default function TasksPage() {
       },
       body: JSON.stringify(form),
     });
-    setForm({ title: "", description: "", priority: "Medium", due_date: "" });
+    setForm({ title: "", description: "", priority: "Medium", category: "Work", due_date: "" });
     setShowAddForm(false);
     fetchTasks();
   };
@@ -108,6 +110,10 @@ export default function TasksPage() {
       if (selectedStatus === "completed") return Boolean(task.completed);
       if (selectedStatus === "pending") return !Boolean(task.completed);
       return true;
+    }
+    if (filterType === "category") {
+      if (selectedCategory === "all") return true;
+      return task.category === selectedCategory;
     }
     return true;
   });
@@ -466,6 +472,44 @@ export default function TasksPage() {
                 </div>
               </div>
 
+              {/* Category */}
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                  Category
+                </p>
+                <div className="flex gap-2">
+                  {[
+                    { label: "Work",  color: "#4F6EF7", bg: "#EEF1FE" },
+                    { label: "Study", color: "#7C3AED", bg: "#F5F3FF" },
+                    { label: "Life",  color: "#10B981", bg: "#D1FAE5" },
+                  ].map(({ label, color, bg }) => {
+                    const active = form.category === label;
+                    return (
+                      <button
+                        type="button"
+                        key={label}
+                        onClick={() => setForm(prev => ({ ...prev, category: label }))}
+                        style={{
+                          flex: 1,
+                          padding: '10px',
+                          borderRadius: '12px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          background: active ? bg : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                          color: active ? color : (isDark ? '#F5F5F7' : '#6E6E73'),
+                          border: active ? `1.5px solid ${color}40` : (isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA'),
+                          boxShadow: active ? `0 2px 8px ${color}20` : 'none',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Due Date */}
               <div>
                 <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
@@ -667,6 +711,37 @@ export default function TasksPage() {
                 }}/>
               )}
             </button>
+            <button
+              onClick={() => setFilterType("category")}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '500',
+                transition: 'all 0.3s ease',
+                background: filterType === "category" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
+                color: filterType === "category" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
+                border: 'none',
+                position: 'relative',
+                whiteSpace: 'nowrap',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+              }}
+            >
+              ◈ Category
+              {filterType === "category" && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-13px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '20px',
+                  height: '3px',
+                  background: '#5E5CE6',
+                  borderRadius: '2px',
+                  transition: 'all 0.3s ease'
+                }}/>
+              )}
+            </button>
 
           </div>
 
@@ -709,6 +784,35 @@ export default function TasksPage() {
                   }}
                 >
                   {s.charAt(0).toUpperCase() + s.slice(1)}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {filterType === "category" && (
+            <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+              {[
+                { label: "all",   display: "All",   color: '#5E5CE6' },
+                { label: "Work",  display: "Work",  color: '#4F6EF7' },
+                { label: "Study", display: "Study", color: '#7C3AED' },
+                { label: "Life",  display: "Life",  color: '#10B981' },
+              ].map(({ label, display, color }) => (
+                <button
+                  key={label}
+                  onClick={() => setSelectedCategory(label)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease',
+                    background: selectedCategory === label ? `${color}18` : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                    color: selectedCategory === label ? color : (isDark ? '#F5F5F7' : '#6E6E73'),
+                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  }}
+                >
+                  {display}
                 </button>
               ))}
             </div>
