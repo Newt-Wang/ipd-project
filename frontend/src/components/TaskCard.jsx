@@ -28,6 +28,13 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
   };
   const pCfg = priorityConfig[task.priority] || priorityConfig.Medium;
 
+  const categoryConfig = {
+    Work:  { color: '#4F6EF7', bg: '#EEF1FE' },
+    Study: { color: '#7C3AED', bg: '#F5F3FF' },
+    Life:  { color: '#10B981', bg: '#D1FAE5' },
+  };
+  const cCfg = task.category ? (categoryConfig[task.category] || null) : null;
+
   const isOverdue = task.due_date && !statusDone
     && new Date(task.due_date) < new Date();
 
@@ -134,13 +141,28 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
           )}
 
           {/* Meta row */}
-          <div style={{ 
+          <div style={{
             marginTop: '8px',
             display: 'flex',
             flexDirection: 'column',
             gap: '4px',
             fontSize: '10px'
           }}>
+            {cCfg && (
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                alignSelf: 'flex-start',
+                padding: '1px 7px',
+                borderRadius: '99px',
+                fontSize: '10px',
+                fontWeight: '600',
+                background: cCfg.bg,
+                color: cCfg.color,
+              }}>
+                {task.category}
+              </span>
+            )}
             {task.created_at && (
               <span style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
                 Created {formatTime(task.created_at)}

@@ -11,12 +11,16 @@ export default function TasksPage() {
     title: "",
     description: "",
     priority: "Medium",
+    category: "Work",
     due_date: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
-  const [filterType, setFilterType] = useState(null); // 'date' / 'status'
+  const [filterType, setFilterType] = useState(null); // 'date' / 'status' / 'category'
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const playClickSound = () => {
     try {
@@ -42,6 +46,18 @@ export default function TasksPage() {
 
   const token = localStorage.getItem("token");
 
+  const fetchNotifications = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/tasks/notifications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setNotifications(Array.isArray(data) ? data : []);
+    } catch {
+      setNotifications([]);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -61,6 +77,7 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchTasks();
+    fetchNotifications();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -73,7 +90,7 @@ export default function TasksPage() {
       },
       body: JSON.stringify(form),
     });
-    setForm({ title: "", description: "", priority: "Medium", due_date: "" });
+    setForm({ title: "", description: "", priority: "Medium", category: "Work", due_date: "" });
     setShowAddForm(false);
     fetchTasks();
   };
@@ -108,6 +125,10 @@ export default function TasksPage() {
       if (selectedStatus === "completed") return Boolean(task.completed);
       if (selectedStatus === "pending") return !Boolean(task.completed);
       return true;
+    }
+    if (filterType === "category") {
+      if (selectedCategory === "all") return true;
+      return task.category === selectedCategory;
     }
     return true;
   });
@@ -146,6 +167,81 @@ export default function TasksPage() {
             </span>
           </div>
           <div className="flex items-center gap-3">
+            {/* Notification Bell */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
+                style={{
+                  color: isDark ? '#F5F5F7' : '#6E6E73',
+                  background: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                  boxShadow: isDark ? '0 1px 2px rgba(0, 0, 0, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(40, 40, 40, 0.9)' : 'rgba(243, 244, 246, 0.9)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'; }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {notifications.length > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '4px',
+                    right: '4px',
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    background: '#EF4444',
+                    border: '1.5px solid white'
+                  }} />
+                )}
+              </button>
+              {showNotifications && (
+                <div style={{
+                  position: 'absolute',
+                  top: '44px',
+                  right: 0,
+                  width: '280px',
+                  background: isDark ? 'rgba(25, 25, 25, 0.97)' : 'rgba(255, 255, 255, 0.97)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '12px',
+                  boxShadow: isDark ? '0 8px 24px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.12)',
+                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid rgba(229,229,234,0.6)',
+                  zIndex: 200,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ padding: '12px 16px', borderBottom: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA' }}>
+                    <span style={{ fontSize: '13px', fontWeight: '600', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
+                      Overdue Reminders
+                    </span>
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '20px 16px', textAlign: 'center', fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                      No overdue tasks
+                    </div>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} style={{
+                        padding: '10px 16px',
+                        borderBottom: isDark ? '1px solid rgba(50,50,50,0.4)' : '1px solid #F2F2F7',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '8px'
+                      }}>
+                        <span style={{ color: '#EF4444', fontSize: '14px', marginTop: '1px' }}>●</span>
+                        <div>
+                          <div style={{ fontSize: '13px', fontWeight: '500', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>{n.title}</div>
+                          <div style={{ fontSize: '11px', color: isDark ? '#8E8E93' : '#6E6E73', marginTop: '2px' }}>
+                            Pending for over 1 day
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
@@ -466,6 +562,44 @@ export default function TasksPage() {
                 </div>
               </div>
 
+              {/* Category */}
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                  Category
+                </p>
+                <div className="flex gap-2">
+                  {[
+                    { label: "Work",  color: "#4F6EF7", bg: "#EEF1FE" },
+                    { label: "Study", color: "#7C3AED", bg: "#F5F3FF" },
+                    { label: "Life",  color: "#10B981", bg: "#D1FAE5" },
+                  ].map(({ label, color, bg }) => {
+                    const active = form.category === label;
+                    return (
+                      <button
+                        type="button"
+                        key={label}
+                        onClick={() => setForm(prev => ({ ...prev, category: label }))}
+                        style={{
+                          flex: 1,
+                          padding: '10px',
+                          borderRadius: '12px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          background: active ? bg : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                          color: active ? color : (isDark ? '#F5F5F7' : '#6E6E73'),
+                          border: active ? `1.5px solid ${color}40` : (isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA'),
+                          boxShadow: active ? `0 2px 8px ${color}20` : 'none',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Due Date */}
               <div>
                 <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
@@ -667,6 +801,37 @@ export default function TasksPage() {
                 }}/>
               )}
             </button>
+            <button
+              onClick={() => setFilterType("category")}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '500',
+                transition: 'all 0.3s ease',
+                background: filterType === "category" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
+                color: filterType === "category" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
+                border: 'none',
+                position: 'relative',
+                whiteSpace: 'nowrap',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+              }}
+            >
+              ◈ Category
+              {filterType === "category" && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-13px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '20px',
+                  height: '3px',
+                  background: '#5E5CE6',
+                  borderRadius: '2px',
+                  transition: 'all 0.3s ease'
+                }}/>
+              )}
+            </button>
 
           </div>
 
@@ -709,6 +874,35 @@ export default function TasksPage() {
                   }}
                 >
                   {s.charAt(0).toUpperCase() + s.slice(1)}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {filterType === "category" && (
+            <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+              {[
+                { label: "all",   display: "All",   color: '#5E5CE6' },
+                { label: "Work",  display: "Work",  color: '#4F6EF7' },
+                { label: "Study", display: "Study", color: '#7C3AED' },
+                { label: "Life",  display: "Life",  color: '#10B981' },
+              ].map(({ label, display, color }) => (
+                <button
+                  key={label}
+                  onClick={() => setSelectedCategory(label)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease',
+                    background: selectedCategory === label ? `${color}18` : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                    color: selectedCategory === label ? color : (isDark ? '#F5F5F7' : '#6E6E73'),
+                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  }}
+                >
+                  {display}
                 </button>
               ))}
             </div>
