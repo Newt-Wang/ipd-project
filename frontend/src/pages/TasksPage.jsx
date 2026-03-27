@@ -354,15 +354,41 @@ export default function TasksPage() {
 
         {/* ── Add Task Form ── */}
         {showAddForm && (
-          <div style={{ 
-            background: isDark ? 'rgba(30, 30, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '16px',
-            padding: '20px',
-            marginBottom: '20px',
-            boxShadow: isDark ? '0 4px 16px rgba(0, 0, 0, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.08)',
-            border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
-          }}>
+          <>
+            {/* Background Overlay */}
+            <div 
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.3)',
+                backdropFilter: 'blur(2px)',
+                zIndex: 999
+              }}
+              onClick={() => {
+                playClickSound();
+                setShowAddForm(false);
+              }}
+            />
+            
+            {/* Form Container */}
+            <div style={{ 
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '90%',
+              maxWidth: '500px',
+              background: isDark ? 'rgba(30, 30, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '16px',
+              padding: '20px',
+              boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.12)',
+              border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
+              zIndex: 1000
+            }}>
             <h2 className="text-base font-semibold mb-5" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
               New Task
             </h2>
@@ -462,35 +488,65 @@ export default function TasksPage() {
                 />
               </div>
 
-              <button 
-                type="submit" 
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '12px',
-                  background: '#5E5CE6',
-                  color: 'white',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  marginTop: '8px',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(94, 92, 230, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                Add Task
-              </button>
+              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setShowAddForm(false);
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(243, 244, 246, 0.8)',
+                    color: isDark ? '#F5F5F7' : '#6E6E73',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isDark ? 'rgba(50, 50, 50, 0.9)' : 'rgba(229, 231, 235, 0.9)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(243, 244, 246, 0.8)';
+                  }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: '#5E5CE6',
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(94, 92, 230, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  Add Task
+                </button>
+              </div>
             </form>
           </div>
+          </>
         )}
 
         {/* ── Filter Section ── */}
