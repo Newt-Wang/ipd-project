@@ -289,29 +289,29 @@ export default function TasksPage() {
           </div>
           {totalTasks > 0 && (
             <div style={{ 
-              background: 'rgba(255, 255, 255, 0.9)',
+              background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
               backdropFilter: 'blur(10px)',
               borderRadius: '12px',
               padding: '16px 14px',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+              boxShadow: isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)',
               transition: 'all 0.2s ease',
-              border: '1px solid rgba(229, 229, 234, 0.6)',
+              border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+              e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
+              e.currentTarget.style.boxShadow = isDark ? '0 2px 6px rgba(0, 0, 0, 0.3)' : '0 2px 6px rgba(0, 0, 0, 0.06)';
             }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#1D1D1F' }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
                 {Math.round((completedTasks / totalTasks) * 100)}%
               </div>
-              <div style={{ fontSize: '11px', fontWeight: '500', marginBottom: '6px', color: '#6E6E73' }}>
+              <div style={{ fontSize: '11px', fontWeight: '500', marginBottom: '6px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
                 Progress
               </div>
               <div className="w-full h-1 rounded-full" style={{ background: isDark ? '#333333' : '#E5E5EA' }}>
@@ -426,9 +426,11 @@ export default function TasksPage() {
                     width: '100%',
                     padding: '12px 16px',
                     borderRadius: '12px',
-                    border: '1px solid #E5E5EA',
+                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
                     fontSize: '14px',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
+                    background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'white',
+                    color: isDark ? '#F5F5F7' : '#1D1D1F'
                   }}
                   value={form.due_date}
                   onChange={(e) => setForm({ ...form, due_date: e.target.value })}
@@ -485,7 +487,7 @@ export default function TasksPage() {
             display: 'flex', 
             gap: '12px', 
             paddingBottom: '12px',
-            borderBottom: '1px solid #E5E5EA',
+            borderBottom: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
             marginBottom: '16px',
             overflowX: 'auto',
             scrollbarWidth: 'none',
@@ -597,9 +599,11 @@ export default function TasksPage() {
                   maxWidth: '220px',
                   padding: '10px 14px',
                   borderRadius: '12px',
-                  border: '1px solid #E5E5EA',
+                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
                   fontSize: '14px',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
+                  background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'white',
+                  color: isDark ? '#F5F5F7' : '#1D1D1F'
                 }}
               />
             </div>
@@ -617,9 +621,9 @@ export default function TasksPage() {
                     fontSize: '14px',
                     fontWeight: '500',
                     transition: 'all 0.3s ease',
-                    background: selectedStatus === s ? 'rgba(94, 92, 230, 0.1)' : 'rgba(255, 255, 255, 0.8)',
-                    color: selectedStatus === s ? '#5E5CE6' : '#6E6E73',
-                    border: '1px solid #E5E5EA',
+                    background: selectedStatus === s ? 'rgba(94, 92, 230, 0.1)' : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                    color: selectedStatus === s ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
+                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
                   }}
                 >
