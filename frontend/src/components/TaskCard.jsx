@@ -1,4 +1,7 @@
+import { useTheme } from "../context/ThemeContext";
+
 export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
+  const { isDark } = useTheme();
   const statusDone = Boolean(task.completed);
 
   const formatTime = (dateString) => {
@@ -30,10 +33,10 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
 
   return (
     <div className={`p-4 rounded-xl transition-all ${statusDone ? 'opacity-60' : ''}`} style={{ 
-      background: 'rgba(255, 255, 255, 0.9)',
+      background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
       backdropFilter: 'blur(10px)',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-      border: '1px solid rgba(229, 229, 234, 0.6)',
+      boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
+      border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
       transition: 'all 0.2s ease',
       height: '100%',
@@ -41,10 +44,10 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
       flexDirection: 'column'
     }} onMouseEnter={(e) => {
       e.currentTarget.style.transform = 'translateY(-2px)';
-      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+      e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
     }} onMouseLeave={(e) => {
       e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
+      e.currentTarget.style.boxShadow = isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)';
     }}>
       <div className="flex items-start gap-4">
 
@@ -60,7 +63,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             width: '20px',
             height: '20px',
             borderRadius: '50%',
-            border: '2px solid #E5E5EA',
+            border: isDark ? '2px solid rgba(50, 50, 50, 0.6)' : '2px solid #E5E5EA',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -85,7 +88,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
                 fontSize: '14px',
                 fontWeight: '600',
                 lineHeight: '1.4',
-                color: statusDone ? '#8E8E93' : '#1D1D1F',
+                color: statusDone ? '#8E8E93' : (isDark ? '#F5F5F7' : '#1D1D1F'),
                 textDecoration: statusDone ? 'line-through' : 'none',
                 flex: 1
               }}
@@ -120,7 +123,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
               marginTop: '6px',
               fontSize: '12px',
               lineHeight: '1.4',
-              color: '#8E8E93',
+              color: isDark ? '#8E8E93' : '#8E8E93',
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
@@ -139,7 +142,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             fontSize: '10px'
           }}>
             {task.created_at && (
-              <span style={{ color: '#8E8E93' }}>
+              <span style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
                 Created {formatTime(task.created_at)}
               </span>
             )}
@@ -150,7 +153,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
                   alignItems: 'center',
                   gap: '3px',
                   fontWeight: '500',
-                  color: isOverdue ? 'rgba(255, 149, 0, 0.7)' : '#6E6E73',
+                  color: isOverdue ? 'rgba(255, 149, 0, 0.7)' : (isDark ? '#8E8E93' : '#6E6E73'),
                   whiteSpace: 'nowrap'
                 }}
               >
