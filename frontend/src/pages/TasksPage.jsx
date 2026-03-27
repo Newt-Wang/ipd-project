@@ -19,6 +19,8 @@ export default function TasksPage() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const playClickSound = () => {
     try {
@@ -44,6 +46,18 @@ export default function TasksPage() {
 
   const token = localStorage.getItem("token");
 
+  const fetchNotifications = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/tasks/notifications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setNotifications(Array.isArray(data) ? data : []);
+    } catch {
+      setNotifications([]);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -63,6 +77,7 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchTasks();
+    fetchNotifications();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -152,6 +167,81 @@ export default function TasksPage() {
             </span>
           </div>
           <div className="flex items-center gap-3">
+            {/* Notification Bell */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
+                style={{
+                  color: isDark ? '#F5F5F7' : '#6E6E73',
+                  background: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                  boxShadow: isDark ? '0 1px 2px rgba(0, 0, 0, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(40, 40, 40, 0.9)' : 'rgba(243, 244, 246, 0.9)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'; }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {notifications.length > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '4px',
+                    right: '4px',
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    background: '#EF4444',
+                    border: '1.5px solid white'
+                  }} />
+                )}
+              </button>
+              {showNotifications && (
+                <div style={{
+                  position: 'absolute',
+                  top: '44px',
+                  right: 0,
+                  width: '280px',
+                  background: isDark ? 'rgba(25, 25, 25, 0.97)' : 'rgba(255, 255, 255, 0.97)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '12px',
+                  boxShadow: isDark ? '0 8px 24px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.12)',
+                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid rgba(229,229,234,0.6)',
+                  zIndex: 200,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ padding: '12px 16px', borderBottom: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA' }}>
+                    <span style={{ fontSize: '13px', fontWeight: '600', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
+                      Overdue Reminders
+                    </span>
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '20px 16px', textAlign: 'center', fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                      No overdue tasks
+                    </div>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} style={{
+                        padding: '10px 16px',
+                        borderBottom: isDark ? '1px solid rgba(50,50,50,0.4)' : '1px solid #F2F2F7',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '8px'
+                      }}>
+                        <span style={{ color: '#EF4444', fontSize: '14px', marginTop: '1px' }}>●</span>
+                        <div>
+                          <div style={{ fontSize: '13px', fontWeight: '500', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>{n.title}</div>
+                          <div style={{ fontSize: '11px', color: isDark ? '#8E8E93' : '#6E6E73', marginTop: '2px' }}>
+                            Pending for over 1 day
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"

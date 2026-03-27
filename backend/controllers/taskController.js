@@ -76,6 +76,23 @@ export const deleteTask = async (req, res) => {
   }
 };
 
+// 获取未完成超过1天的任务通知
+export const getNotifications = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const [tasks] = await pool.query(
+      `SELECT id, title, created_at FROM tasks
+       WHERE user_id = ? AND completed = 0
+       AND created_at <= DATE_SUB(NOW(), INTERVAL 1 DAY)`,
+      [userId]
+    );
+    res.json(tasks);
+  } catch (err) {
+    console.error("getNotifications error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // 更新任务完成状态
 export const updateTaskStatus = async (req, res) => {
   const { id } = req.params;
