@@ -10,6 +10,7 @@ export default function EditTaskPage() {
     title: "",
     description: "",
     priority: "Medium",
+    category: "Work",
     due_date: "",
   });
 
@@ -25,6 +26,7 @@ export default function EditTaskPage() {
             title: found.title,
             description: found.description || "",
             priority: found.priority || "Medium",
+            category: found.category || "Work",
             due_date: found.due_date || "",
           });
         }
@@ -132,6 +134,38 @@ export default function EditTaskPage() {
                       type="button"
                       key={label}
                       onClick={() => setTask(prev => ({ ...prev, priority: label }))}
+                      className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                      style={{
+                        background: active ? bg : 'var(--surface-secondary)',
+                        color: active ? color : 'var(--text-secondary)',
+                        border: active ? `1.5px solid ${color}40` : '1.5px solid var(--border)',
+                        boxShadow: active ? `0 2px 8px ${color}20` : 'none'
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                Category
+              </label>
+              <div className="flex gap-2">
+                {[
+                  { label: "Work",  color: "#4F6EF7", bg: "#EEF1FE" },
+                  { label: "Study", color: "#7C3AED", bg: "#F5F3FF" },
+                  { label: "Life",  color: "#10B981", bg: "#D1FAE5" },
+                ].map(({ label, color, bg }) => {
+                  const active = task.category === label;
+                  return (
+                    <button
+                      type="button"
+                      key={label}
+                      onClick={() => setTask(prev => ({ ...prev, category: label }))}
                       className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
                       style={{
                         background: active ? bg : 'var(--surface-secondary)',
