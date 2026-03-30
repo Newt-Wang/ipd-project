@@ -10,22 +10,20 @@ export const getTasks = async (req, res) => {
   res.json(tasks);
 };
 
-// 新建任务（增加 priority 和 due_date）
+// 新建任务（增加 priority、due_date 和 reminder_at）
 export const createTask = async (req, res) => {
   const userId = req.user.id;
-  const { title, description, priority = "Medium", category = "Work", due_date } = req.body;
+  const { title, description, priority = "Medium", category = "Work", due_date, reminder_at } = req.body;
 
-  // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
-  let formattedDueDate = null;
-  if (due_date) {
-    const date = new Date(due_date);
-    formattedDueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-  }
+  const formatDate = (d) => {
+    if (!d) return null;
+    return new Date(d).toISOString().slice(0, 19).replace('T', ' ');
+  };
 
   try {
     await pool.query(
-      "INSERT INTO tasks (title, description, priority, category, due_date, user_id) VALUES (?, ?, ?, ?, ?, ?)",
-      [title, description, priority, category, formattedDueDate, userId]
+      "INSERT INTO tasks (title, description, priority, category, due_date, reminder_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [title, description, priority, category, formatDate(due_date), formatDate(reminder_at), userId]
     );
     res.json({ message: "Task created" });
   } catch (err) {
@@ -34,23 +32,21 @@ export const createTask = async (req, res) => {
   }
 };
 
-// 更新任务（增加 priority 和 due_date）
+// 更新任务（增加 priority、due_date 和 reminder_at）
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
-  const { title, description, completed, priority = "Medium", category = "Work", due_date } = req.body;
+  const { title, description, completed, priority = "Medium", category = "Work", due_date, reminder_at } = req.body;
 
-  // 转换日期格式：将 ISO 格式的日期字符串转换为 MySQL datetime 格式
-  let formattedDueDate = null;
-  if (due_date) {
-    const date = new Date(due_date);
-    formattedDueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-  }
+  const formatDate = (d) => {
+    if (!d) return null;
+    return new Date(d).toISOString().slice(0, 19).replace('T', ' ');
+  };
 
   try {
     await pool.query(
-      "UPDATE tasks SET title=?, description=?, completed=?, priority=?, category=?, due_date=? WHERE id=? AND user_id=?",
-      [title, description, completed, priority, category, formattedDueDate, id, userId]
+      "UPDATE tasks SET title=?, description=?, completed=?, priority=?, category=?, due_date=?, reminder_at=? WHERE id=? AND user_id=?",
+      [title, description, completed, priority, category, formatDate(due_date), formatDate(reminder_at), id, userId]
     );
     res.json({ message: "Task updated" });
   } catch (err) {
@@ -107,6 +103,41 @@ export const updateTaskStatus = async (req, res) => {
     res.json({ message: "Task status updated" });
   } catch (err) {
     console.error("updateTaskStatus error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// 获取到期提醒（reminder_at <= 当前时间 且未完成 且 reminder_notified = 0）
+export const getDueReminders = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const [tasks] = await pool.query(
+      `SELECT id, title, reminder_at FROM tasks
+       WHERE user_id = ? AND completed = 0
+       AND reminder_at IS NOT NULL
+       AND reminder_at <= NOW()
+       AND reminder_notified = 0`,
+      [userId]
+    );
+    res.json(tasks);
+  } catch (err) {
+    console.error("getDueReminders error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// 标记提醒已发送
+export const markReminderNotified = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  try {
+    await pool.query(
+      "UPDATE tasks SET reminder_notified = 1 WHERE id = ? AND user_id = ?",
+      [id, userId]
+    );
+    res.json({ message: "Reminder marked as notified" });
+  } catch (err) {
+    console.error("markReminderNotified error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

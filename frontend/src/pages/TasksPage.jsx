@@ -13,6 +13,7 @@ export default function TasksPage() {
     priority: "Medium",
     category: "Work",
     due_date: "",
+    reminder_at: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
   const [filterType, setFilterType] = useState(null); // 'date' / 'status' / 'category'
@@ -78,6 +79,44 @@ export default function TasksPage() {
   useEffect(() => {
     fetchTasks();
     fetchNotifications();
+
+    // 请求浏览器通知权限
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
+    // 每30秒轮询一次到期提醒
+    const reminderInterval = setInterval(async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/tasks/reminders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const reminders = await res.json();
+        if (Array.isArray(reminders) && reminders.length > 0) {
+          for (const r of reminders) {
+            // 发送浏览器通知
+            if ("Notification" in window && Notification.permission === "granted") {
+              new Notification("⏰ Task Reminder", {
+                body: r.title,
+                icon: "/vite.svg",
+                tag: `reminder-${r.id}`,
+              });
+            }
+            // 标记为已通知
+            await fetch(`http://localhost:4000/api/tasks/${r.id}/reminder-notified`, {
+              method: "PUT",
+              headers: { Authorization: `Bearer ${token}` },
+            });
+          }
+          // 刷新通知列表
+          fetchNotifications();
+        }
+      } catch (err) {
+        console.log("Reminder check failed:", err);
+      }
+    }, 30000);
+
+    return () => clearInterval(reminderInterval);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -90,7 +129,7 @@ export default function TasksPage() {
       },
       body: JSON.stringify(form),
     });
-    setForm({ title: "", description: "", priority: "Medium", category: "Work", due_date: "" });
+    setForm({ title: "", description: "", priority: "Medium", category: "Work", due_date: "", reminder_at: "" });
     setShowAddForm(false);
     fetchTasks();
   };
@@ -620,6 +659,31 @@ export default function TasksPage() {
                   value={form.due_date}
                   onChange={(e) => setForm({ ...form, due_date: e.target.value })}
                 />
+              </div>
+
+              {/* Reminder */}
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                  🔔 Reminder
+                </p>
+                <input
+                  type="datetime-local"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
+                    fontSize: '14px',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
+                    background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'white',
+                    color: isDark ? '#F5F5F7' : '#1D1D1F'
+                  }}
+                  value={form.reminder_at}
+                  onChange={(e) => setForm({ ...form, reminder_at: e.target.value })}
+                />
+                <p style={{ fontSize: '11px', marginTop: '4px', color: isDark ? '#6E6E73' : '#8E8E93' }}>
+                  You'll get a browser notification at this time
+                </p>
               </div>
 
               <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
