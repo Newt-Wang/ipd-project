@@ -186,6 +186,23 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
                 {isOverdue ? 'Overdue' : ''}{isOverdue && ' · '}{formatTime(task.due_date)}
               </span>
             )}
+            {task.reminder_at && (
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                  fontWeight: '500',
+                  color: isDark ? '#F59E0B' : '#D97706',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {formatTime(task.reminder_at)}
+              </span>
+            )}
           </div>
         </div>
 

@@ -12,6 +12,7 @@ export default function EditTaskPage() {
     priority: "Medium",
     category: "Work",
     due_date: "",
+    reminder_at: "",
   });
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function EditTaskPage() {
             priority: found.priority || "Medium",
             category: found.category || "Work",
             due_date: found.due_date || "",
+            reminder_at: found.reminder_at || "",
           });
         }
       });
@@ -192,6 +194,22 @@ export default function EditTaskPage() {
                 onChange={(e) => setTask({ ...task, due_date: e.target.value })}
                 className="form-input"
               />
+            </div>
+
+            {/* Reminder */}
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                Reminder
+              </label>
+              <input
+                type="datetime-local"
+                value={task.reminder_at}
+                onChange={(e) => setTask({ ...task, reminder_at: e.target.value })}
+                className="form-input"
+              />
+              <p style={{ fontSize: '12px', marginTop: '4px', color: 'var(--text-tertiary)' }}>
+                You'll get a browser notification at this time
+              </p>
             </div>
           </div>
         </div>
