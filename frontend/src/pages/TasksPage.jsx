@@ -664,7 +664,7 @@ export default function TasksPage() {
               {/* Reminder */}
               <div>
                 <p className="text-sm font-medium mb-2" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
-                  🔔 Reminder
+                  Reminder
                 </p>
                 <input
                   type="datetime-local"
@@ -1013,7 +1013,12 @@ export default function TasksPage() {
                 boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
                 border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
               }}>
-                <div className="text-4xl mb-3">📋</div>
+                <div className="text-4xl mb-3">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style={{ margin: '0 auto' }}>
+                    <rect x="3" y="3" width="18" height="18" rx="2" stroke={isDark ? '#8E8E93' : '#6E6E73'} strokeWidth="1.5"/>
+                    <path d="M8 7h8M8 11h5" stroke={isDark ? '#8E8E93' : '#6E6E73'} strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
                 <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
                   No tasks found
                 </p>

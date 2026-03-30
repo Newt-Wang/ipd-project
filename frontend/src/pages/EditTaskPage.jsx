@@ -199,7 +199,7 @@ export default function EditTaskPage() {
             {/* Reminder */}
             <div>
               <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                🔔 Reminder
+                Reminder
               </label>
               <input
                 type="datetime-local"
