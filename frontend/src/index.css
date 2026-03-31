@@ -135,7 +135,7 @@ button, a, input, select, textarea {
   border-radius: var(--radius-md);
   background: var(--surface-secondary);
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 18px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
@@ -157,7 +157,7 @@ button, a, input, select, textarea {
   padding: 13px 24px;
   background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   font-family: inherit;
   border: none;
