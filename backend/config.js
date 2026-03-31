@@ -8,3 +8,5 @@ export default {
   },
   jwtSecret: "MY_SECRET_KEY_123456"
 };
+
+// This is for configuration of users, make sure to change the database credentials and jwtSecret before running the application.
