@@ -928,37 +928,277 @@ export default function TasksPage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {filteredTasks.map((t) => (
-              <TaskCard
-                key={t.id}
-                task={t}
-                onClick={() => handleEditTask(t.id)}
-                onDelete={() => deleteTask(t.id)}
-                onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
-              />
-            ))}
+          {/* Timeline View for Date Filter */}
+          {filterType === "date" ? (
+            <div style={{ 
+              position: 'relative',
+              paddingLeft: '40px',
+              maxWidth: '800px',
+              margin: '0 auto'
+            }}>
+              {/* Timeline Line */}
+              <div style={{
+                position: 'absolute',
+                left: '15px',
+                top: '0',
+                bottom: '0',
+                width: '2px',
+                background: isDark ? 'rgba(50, 50, 50, 0.6)' : 'rgba(229, 229, 234, 0.8)'
+              }} />
 
-            {filteredTasks.length === 0 && (
-              <div className="col-span-full" style={{ 
-                background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: '12px',
-                padding: '40px 20px',
-                textAlign: 'center',
-                boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
-                border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
-              }}>
-                <div className="text-4xl mb-3">📋</div>
-                <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
-                  No tasks found
-                </p>
-                <p className="text-xs mt-1" style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
-                  {filterType ? "Try a different filter" : "Add your first task by clicking the + button"}
-                </p>
-              </div>
-            )}
-          </div>
+              {filteredTasks
+                .sort((a, b) => {
+                  // Sort by due date, with earlier dates first
+                  const dateA = a.due_date ? new Date(a.due_date) : new Date(0);
+                  const dateB = b.due_date ? new Date(b.due_date) : new Date(0);
+                  return dateA - dateB;
+                })
+                .map((t, index) => {
+                  const taskDate = t.due_date ? new Date(t.due_date) : null;
+                  const formattedDate = taskDate ? taskDate.toLocaleString('zh-CN', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) : 'No Due Date';
+                  
+                  // Get priority color
+                  const priorityColors = {
+                    High: '#EF4444',
+                    Medium: '#F59E0B',
+                    Low: '#10B981'
+                  };
+                  const priorityColor = priorityColors[t.priority] || '#6E6E73';
+
+                  return (
+                    <div key={t.id} style={{
+                      position: 'relative',
+                      marginBottom: '32px',
+                      padding: '20px',
+                      background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: '16px',
+                      boxShadow: isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)',
+                      border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => handleEditTask(t.id)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateX(8px)';
+                      e.currentTarget.style.boxShadow = isDark ? '0 6px 16px rgba(0, 0, 0, 0.5)' : '0 6px 16px rgba(0, 0, 0, 0.12)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateX(0)';
+                      e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
+                    }}>
+                      {/* Timeline Dot */}
+                      <div style={{
+                        position: 'absolute',
+                        left: '-40px',
+                        top: '24px',
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '50%',
+                        background: priorityColor,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: `0 4px 8px ${priorityColor}40`,
+                        border: '3px solid' + (isDark ? '#0A0A0A' : '#F9F9FB')
+                      }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                          <path d="M9 11l3 3L22 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      
+                      {/* Task Content */}
+                      <div className="flex justify-between items-start">
+                        <div style={{ flex: 1, marginRight: '16px' }}>
+                          <h3 style={{ 
+                            fontSize: '16px', 
+                            fontWeight: '600', 
+                            marginBottom: '8px',
+                            color: isDark ? '#F5F5F7' : '#1D1D1F',
+                            textDecoration: t.completed ? 'line-through' : 'none',
+                            opacity: t.completed ? 0.6 : 1
+                          }}>
+                            {t.title}
+                          </h3>
+                          {t.description && (
+                            <p style={{ 
+                              fontSize: '14px', 
+                              marginBottom: '12px',
+                              color: isDark ? '#8E8E93' : '#6E6E73',
+                              lineHeight: '1.5',
+                              opacity: t.completed ? 0.6 : 1
+                            }}>
+                              {t.description}
+                            </p>
+                          )}
+                          <div className="flex flex-wrap gap-2">
+                            <span style={{ 
+                              fontSize: '12px',
+                              fontWeight: '500',
+                              padding: '4px 10px',
+                              borderRadius: '12px',
+                              background: `${priorityColor}15`,
+                              color: priorityColor
+                            }}>
+                              {t.priority}
+                            </span>
+                            <span style={{ 
+                              fontSize: '12px',
+                              fontWeight: '500',
+                              padding: '4px 10px',
+                              borderRadius: '12px',
+                              background: isDark ? 'rgba(50, 50, 50, 0.6)' : 'rgba(243, 244, 246, 0.8)',
+                              color: isDark ? '#F5F5F7' : '#6E6E73'
+                            }}>
+                              {t.category}
+                            </span>
+                            <span style={{ 
+                              fontSize: '12px',
+                              fontWeight: '500',
+                              padding: '4px 10px',
+                              borderRadius: '12px',
+                              background: isDark ? 'rgba(50, 50, 50, 0.6)' : 'rgba(243, 244, 246, 0.8)',
+                              color: isDark ? '#F5F5F7' : '#6E6E73'
+                            }}>
+                              {formattedDate}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleTaskStatus(t.id, t.completed);
+                            }}
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '12px',
+                              border: t.completed ? 'none' : (isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA'),
+                              background: t.completed ? '#34C759' : (isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+                              color: t.completed ? 'white' : (isDark ? '#8E8E93' : '#6E6E73'),
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.transform = 'scale(1.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                          >
+                            {t.completed ? (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            ) : (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+                              </svg>
+                            )}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm('Are you sure you want to delete this task?')) {
+                                deleteTask(t.id);
+                              }
+                            }}
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '12px',
+                              border: isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA',
+                              background: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                              color: '#EF4444',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.transform = 'scale(1.1)';
+                              e.currentTarget.style.background = '#FEE2E2';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.transform = 'scale(1)';
+                              e.currentTarget.style.background = isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)';
+                            }}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+
+              {filteredTasks.length === 0 && (
+                <div style={{ 
+                  position: 'relative',
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '16px',
+                  boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
+                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
+                }}>
+                  <div className="text-4xl mb-3">📅</div>
+                  <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
+                    No tasks found for this date
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
+                    Try selecting a different date or add a new task
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Grid View for other filters */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {filteredTasks.map((t) => (
+                <TaskCard
+                  key={t.id}
+                  task={t}
+                  onClick={() => handleEditTask(t.id)}
+                  onDelete={() => deleteTask(t.id)}
+                  onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
+                />
+              ))}
+
+              {filteredTasks.length === 0 && (
+                <div className="col-span-full" style={{ 
+                  background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '12px',
+                  padding: '40px 20px',
+                  textAlign: 'center',
+                  boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
+                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
+                }}>
+                  <div className="text-4xl mb-3">📋</div>
+                  <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
+                    No tasks found
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
+                    {filterType ? "Try a different filter" : "Add your first task by clicking the + button"}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
