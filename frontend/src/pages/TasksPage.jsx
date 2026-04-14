@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import TaskCard from "../components/TaskCard";
 
 export default function TasksPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState({
@@ -15,9 +16,14 @@ export default function TasksPage() {
     due_date: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
-  const [filterType, setFilterType] = useState(null); // 'date' / 'status' / 'category'
+
+  const searchParams = new URLSearchParams(location.search);
+  const initialFilter = searchParams.get("filter") || null;
+  const initialStatus = searchParams.get("status") || "all";
+
+  const [filterType, setFilterType] = useState(initialFilter);
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);

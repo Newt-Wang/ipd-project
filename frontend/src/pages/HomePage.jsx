@@ -18,9 +18,10 @@ export default function HomePage() {
           <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "Task Management",
-      description: "Create, edit, and organize your tasks with ease. Set priorities, categories, and due dates to stay on track.",
-      color: "#4F6EF7"
+      title: "我的任务",
+      description: "查看所有任务，添加、编辑和管理你的待办事项，轻松追踪进度。",
+      color: "#4F6EF7",
+      route: "/tasks"
     },
     {
       icon: (
@@ -29,9 +30,10 @@ export default function HomePage() {
           <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
-      title: "Smart Reminders",
-      description: "Get notified about overdue tasks and never miss an important deadline again.",
-      color: "#F59E0B"
+      title: "待办提醒",
+      description: "查看所有未完成任务，及时处理逾期事项，不错过任何重要截止日期。",
+      color: "#F59E0B",
+      route: "/tasks?filter=status&status=pending"
     },
     {
       icon: (
@@ -40,9 +42,10 @@ export default function HomePage() {
           <path d="M3 9h18M9 21V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
-      title: "Category Organization",
-      description: "Organize tasks by Work, Study, and Life categories. Filter and find what you need quickly.",
-      color: "#10B981"
+      title: "按类别筛选",
+      description: "按工作、学习、生活三大类别整理和筛选任务，快速定位你需要的内容。",
+      color: "#10B981",
+      route: "/tasks?filter=category"
     },
     {
       icon: (
@@ -50,9 +53,10 @@ export default function HomePage() {
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "Priority Levels",
-      description: "Set High, Medium, or Low priority for each task. Focus on what matters most.",
-      color: "#7C3AED"
+      title: "按日期查看",
+      description: "以时间轴视图浏览任务，选择特定日期查看当天的所有安排。",
+      color: "#7C3AED",
+      route: "/tasks?filter=date"
     }
   ];
 
@@ -181,7 +185,7 @@ export default function HomePage() {
                 border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
                 cursor: 'pointer'
               }}
-              onClick={() => navigate("/tasks")}
+              onClick={() => navigate(feature.route)}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : '0 8px 24px rgba(0, 0, 0, 0.1)';
@@ -221,10 +225,10 @@ export default function HomePage() {
           }}
         >
           <h2 className="text-2xl font-bold mb-6" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
-            Start Managing Your Tasks Today
+            立即开始管理你的任务
           </h2>
           <p className="text-sm mb-6 max-w-xl mx-auto" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
-            Join thousands of users who have improved their productivity with Task Manager. Create your first task now and experience the difference.
+            选择上方任意功能卡片开始使用，或点击下方按钮直接前往任务列表，创建你的第一个任务。
           </p>
           <button
             onClick={() => navigate("/tasks")}
