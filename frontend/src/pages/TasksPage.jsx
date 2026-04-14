@@ -27,6 +27,10 @@ export default function TasksPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [dismissedIds, setDismissedIds] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("dismissedNotifications") || "[]"); }
+    catch { return []; }
+  });
   const [showAddForm, setShowAddForm] = useState(initialShowAdd);
 
   const playClickSound = () => {
@@ -191,7 +195,7 @@ export default function TasksPage() {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                {notifications.length > 0 && (
+                {notifications.filter(n => !dismissedIds.includes(n.id)).length > 0 && (
                   <span style={{
                     position: 'absolute',
                     top: '4px',
@@ -204,50 +208,184 @@ export default function TasksPage() {
                   }} />
                 )}
               </button>
-              {showNotifications && (
-                <div style={{
-                  position: 'absolute',
-                  top: '44px',
-                  right: 0,
-                  width: '280px',
-                  background: isDark ? 'rgba(25, 25, 25, 0.97)' : 'rgba(255, 255, 255, 0.97)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '12px',
-                  boxShadow: isDark ? '0 8px 24px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.12)',
-                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid rgba(229,229,234,0.6)',
-                  zIndex: 200,
-                  overflow: 'hidden'
-                }}>
-                  <div style={{ padding: '12px 16px', borderBottom: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA' }}>
-                    <span style={{ fontSize: '13px', fontWeight: '600', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
-                      Overdue Reminders
-                    </span>
-                  </div>
-                  {notifications.length === 0 ? (
-                    <div style={{ padding: '20px 16px', textAlign: 'center', fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
-                      No overdue tasks
+              {showNotifications && (() => {
+                const priorityColor = { High: '#EF4444', Medium: '#F59E0B', Low: '#10B981' };
+                const visible = notifications.filter(n => !dismissedIds.includes(n.id));
+                const dismissOne = (id) => {
+                  const next = [...dismissedIds, id];
+                  setDismissedIds(next);
+                  localStorage.setItem('dismissedNotifications', JSON.stringify(next));
+                };
+                const dismissAll = () => {
+                  const next = [...dismissedIds, ...visible.map(n => n.id)];
+                  setDismissedIds(next);
+                  localStorage.setItem('dismissedNotifications', JSON.stringify(next));
+                };
+                return (
+                  <div style={{
+                    position: 'absolute',
+                    top: '44px',
+                    right: 0,
+                    width: '340px',
+                    background: isDark ? 'rgba(25, 25, 25, 0.97)' : 'rgba(255, 255, 255, 0.97)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '12px',
+                    boxShadow: isDark ? '0 8px 24px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.12)',
+                    border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid rgba(229,229,234,0.6)',
+                    zIndex: 200,
+                    overflow: 'hidden',
+                    maxHeight: '480px',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}>
+                    {/* Header */}
+                    <div style={{
+                      padding: '12px 16px',
+                      borderBottom: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexShrink: 0
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '13px', fontWeight: '600', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
+                          Overdue Reminders
+                        </span>
+                        {visible.length > 0 && (
+                          <span style={{
+                            fontSize: '11px', fontWeight: '600',
+                            padding: '2px 7px', borderRadius: '10px',
+                            background: '#EF444420', color: '#EF4444'
+                          }}>{visible.length}</span>
+                        )}
+                      </div>
+                      {visible.length > 0 && (
+                        <button
+                          onClick={dismissAll}
+                          style={{
+                            fontSize: '11px', fontWeight: '500',
+                            color: isDark ? '#8E8E93' : '#6E6E73',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            padding: '2px 4px', borderRadius: '4px'
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = isDark ? '#8E8E93' : '#6E6E73'; }}
+                        >
+                          Dismiss all
+                        </button>
+                      )}
                     </div>
-                  ) : (
-                    notifications.map(n => (
-                      <div key={n.id} style={{
-                        padding: '10px 16px',
-                        borderBottom: isDark ? '1px solid rgba(50,50,50,0.4)' : '1px solid #F2F2F7',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '8px'
-                      }}>
-                        <span style={{ color: '#EF4444', fontSize: '14px', marginTop: '1px' }}>●</span>
-                        <div>
-                          <div style={{ fontSize: '13px', fontWeight: '500', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>{n.title}</div>
-                          <div style={{ fontSize: '11px', color: isDark ? '#8E8E93' : '#6E6E73', marginTop: '2px' }}>
-                            Pending for over 1 day
+
+                    {/* List */}
+                    <div style={{ overflowY: 'auto', flex: 1 }}>
+                      {visible.length === 0 ? (
+                        <div style={{ padding: '32px 16px', textAlign: 'center' }}>
+                          <div style={{ fontSize: '24px', marginBottom: '8px' }}>✓</div>
+                          <div style={{ fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                            No overdue tasks
                           </div>
                         </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+                      ) : (
+                        visible.map(n => {
+                          const pColor = priorityColor[n.priority] || '#6E6E73';
+                          const overdueDays = Math.floor((Date.now() - new Date(n.created_at)) / 86400000);
+                          const dueLabel = n.due_date
+                            ? `Due: ${new Date(n.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
+                            : 'No due date';
+                          return (
+                            <div key={n.id} style={{
+                              padding: '12px 16px',
+                              borderBottom: isDark ? '1px solid rgba(50,50,50,0.4)' : '1px solid #F2F2F7',
+                            }}>
+                              {/* Top row: priority badge + title + dismiss */}
+                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                                <span style={{
+                                  marginTop: '2px', flexShrink: 0,
+                                  fontSize: '10px', fontWeight: '600',
+                                  padding: '2px 6px', borderRadius: '6px',
+                                  background: `${pColor}18`, color: pColor
+                                }}>
+                                  {n.priority || 'Medium'}
+                                </span>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{
+                                    fontSize: '13px', fontWeight: '600',
+                                    color: isDark ? '#F5F5F7' : '#1D1D1F',
+                                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                                  }}>
+                                    {n.title}
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => dismissOne(n.id)}
+                                  title="Dismiss"
+                                  style={{
+                                    flexShrink: 0, background: 'none', border: 'none',
+                                    cursor: 'pointer', color: isDark ? '#6E6E73' : '#AEAEB2',
+                                    padding: '0 2px', lineHeight: 1, fontSize: '16px'
+                                  }}
+                                  onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; }}
+                                  onMouseLeave={e => { e.currentTarget.style.color = isDark ? '#6E6E73' : '#AEAEB2'; }}
+                                >
+                                  ×
+                                </button>
+                              </div>
+
+                              {/* Description */}
+                              {n.description && (
+                                <div style={{
+                                  fontSize: '12px', marginTop: '6px',
+                                  color: isDark ? '#8E8E93' : '#6E6E73',
+                                  lineHeight: '1.5',
+                                  display: '-webkit-box', WebkitLineClamp: 2,
+                                  WebkitBoxOrient: 'vertical', overflow: 'hidden'
+                                }}>
+                                  {n.description}
+                                </div>
+                              )}
+
+                              {/* Meta row */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
+                                <span style={{ fontSize: '11px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                                  {dueLabel}
+                                </span>
+                                <span style={{ fontSize: '11px', color: '#EF4444', fontWeight: '500' }}>
+                                  Overdue {overdueDays}d
+                                </span>
+                                <span style={{
+                                  fontSize: '11px', marginLeft: 'auto',
+                                  color: isDark ? '#8E8E93' : '#6E6E73',
+                                  background: isDark ? 'rgba(50,50,50,0.6)' : 'rgba(243,244,246,0.8)',
+                                  padding: '1px 6px', borderRadius: '4px'
+                                }}>
+                                  {n.category}
+                                </span>
+                              </div>
+
+                              {/* Go to task */}
+                              <button
+                                onClick={() => { navigate(`/tasks/edit/${n.id}`); setShowNotifications(false); }}
+                                style={{
+                                  marginTop: '8px', width: '100%',
+                                  padding: '6px', borderRadius: '8px',
+                                  background: isDark ? 'rgba(40,40,40,0.8)' : 'rgba(243,244,246,0.8)',
+                                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                                  color: isDark ? '#F5F5F7' : '#1D1D1F',
+                                  fontSize: '12px', fontWeight: '500', cursor: 'pointer'
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(50,50,50,0.9)' : 'rgba(229,231,235,0.9)'; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = isDark ? 'rgba(40,40,40,0.8)' : 'rgba(243,244,246,0.8)'; }}
+                              >
+                                View Task →
+                              </button>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
             <button
               onClick={toggleTheme}
