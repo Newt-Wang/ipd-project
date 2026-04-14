@@ -15,11 +15,11 @@ export default function TasksPage() {
     category: "Work",
     due_date: "",
   });
-  const [showAddForm, setShowAddForm] = useState(false);
 
   const searchParams = new URLSearchParams(location.search);
   const initialFilter = searchParams.get("filter") || null;
   const initialStatus = searchParams.get("status") || "all";
+  const initialShowAdd = searchParams.get("action") === "add";
 
   const [filterType, setFilterType] = useState(initialFilter);
   const [selectedDate, setSelectedDate] = useState("");
@@ -27,6 +27,7 @@ export default function TasksPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(initialShowAdd);
 
   const playClickSound = () => {
     try {

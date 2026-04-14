@@ -231,7 +231,7 @@ export default function HomePage() {
             Click any feature card above to get started, or go directly to your task list to create your first task.
           </p>
           <button
-            onClick={() => navigate("/tasks")}
+            onClick={() => navigate("/tasks?action=add")}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all"
             style={{
               background: isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(243, 244, 246, 0.8)',
