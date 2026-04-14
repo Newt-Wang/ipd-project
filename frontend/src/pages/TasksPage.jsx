@@ -979,28 +979,108 @@ export default function TasksPage() {
                   })
                   .map((t) => {
                     const taskDate = t.due_date ? new Date(t.due_date) : null;
-                    const formattedDate = taskDate ? taskDate.toLocaleString('en-US', {
-                      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    }) : 'No Due Date';
+                    const isOverdue = taskDate && !t.completed && taskDate < new Date();
                     const priorityColors = { High: '#EF4444', Medium: '#F59E0B', Low: '#10B981' };
                     const priorityColor = priorityColors[t.priority] || '#6E6E73';
+                    const categoryConfig = {
+                      Work:  { color: '#4F6EF7', bg: '#EEF1FE', darkBg: 'rgba(79,110,247,0.18)', icon: '💼' },
+                      Study: { color: '#7C3AED', bg: '#F5F3FF', darkBg: 'rgba(124,58,237,0.18)', icon: '📚' },
+                      Life:  { color: '#10B981', bg: '#D1FAE5', darkBg: 'rgba(16,185,129,0.18)', icon: '🌿' },
+                    };
+                    const cCfg = categoryConfig[t.category] || null;
+
+                    // Time display: split into date line + time line for readability
+                    let dateLineTop = null;
+                    let dateLineBottom = null;
+                    if (taskDate) {
+                      const now = new Date();
+                      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      const dOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
+                      if (dOnly.getTime() === today.getTime()) {
+                        dateLineTop = 'Today';
+                      } else {
+                        dateLineTop = taskDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                      }
+                      dateLineBottom = taskDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    }
+
                     return (
                       <div key={t.id} style={{
-                        position: 'relative', marginBottom: '16px', padding: '16px',
+                        position: 'relative', marginBottom: '20px',
                         background: isDark ? 'rgba(30,30,30,0.95)' : '#FFFFFF',
                         borderRadius: '12px',
                         boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
-                        borderLeft: `3px solid ${priorityColor}`,
+                        borderLeft: `4px solid ${isOverdue ? '#EF4444' : priorityColor}`,
                         transition: 'all 0.15s ease', cursor: 'pointer',
-                        opacity: t.completed ? 0.55 : 1
+                        opacity: t.completed ? 0.55 : 1,
+                        overflow: 'hidden',
                       }}
                       onClick={() => handleEditTask(t.id)}
                       onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0,0,0,0.5)' : '0 4px 12px rgba(0,0,0,0.1)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)'; }}>
-                        <div style={{ position: 'absolute', left: '-33px', top: '18px', width: '16px', height: '16px', borderRadius: '50%', background: priorityColor, border: `3px solid ${isDark ? '#0A0A0A' : '#F9F9FB'}`, boxShadow: `0 0 0 2px ${priorityColor}40` }} />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
-                          <div style={{ flex: 1 }}>
-                            <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: isDark ? '#F5F5F7' : '#1D1D1F', textDecoration: t.completed ? 'line-through' : 'none' }}>
+
+                        {/* Timeline dot */}
+                        <div style={{ position: 'absolute', left: '-33px', top: '20px', width: '18px', height: '18px', borderRadius: '50%', background: isOverdue ? '#EF4444' : priorityColor, border: `3px solid ${isDark ? '#0A0A0A' : '#F9F9FB'}`, boxShadow: `0 0 0 2px ${(isOverdue ? '#EF4444' : priorityColor)}40` }} />
+
+                        {/* Date/Time stamp bar — prominent */}
+                        <div style={{
+                          padding: '7px 14px',
+                          background: isOverdue
+                            ? (isDark ? 'rgba(239,68,68,0.15)' : '#FEF2F2')
+                            : (isDark ? `rgba(50,50,50,0.5)` : '#F8F8FA'),
+                          borderBottom: isDark ? '1px solid rgba(50,50,50,0.4)' : '1px solid rgba(0,0,0,0.05)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                        }}>
+                          {taskDate ? (
+                            <>
+                              <span style={{
+                                fontSize: '15px',
+                                fontWeight: '800',
+                                letterSpacing: '0.3px',
+                                color: isOverdue ? '#EF4444' : (isDark ? '#E5E5EA' : '#1D1D1F'),
+                                fontVariantNumeric: 'tabular-nums',
+                              }}>
+                                {dateLineTop}
+                              </span>
+                              <span style={{
+                                fontSize: '20px',
+                                fontWeight: '800',
+                                letterSpacing: '1px',
+                                color: isOverdue ? '#EF4444' : (isDark ? '#F5F5F7' : '#1D1D1F'),
+                                fontVariantNumeric: 'tabular-nums',
+                                fontFamily: '"SF Mono", "Fira Code", monospace',
+                              }}>
+                                {dateLineBottom}
+                              </span>
+                              {isOverdue && (
+                                <span style={{
+                                  marginLeft: 'auto',
+                                  fontSize: '11px', fontWeight: '700',
+                                  padding: '3px 8px', borderRadius: '99px',
+                                  background: '#EF444420', color: '#EF4444',
+                                  letterSpacing: '0.3px',
+                                }}>
+                                  OVERDUE
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <span style={{ fontSize: '13px', fontWeight: '600', color: isDark ? '#6E6E73' : '#AEAEB2' }}>
+                              — No Due Date —
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Card body */}
+                        <div style={{ padding: '12px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <h3 style={{
+                              fontSize: '14px', fontWeight: '600', marginBottom: '4px',
+                              color: isDark ? '#F5F5F7' : '#1D1D1F',
+                              textDecoration: t.completed ? 'line-through' : 'none',
+                            }}>
                               {t.title}
                             </h3>
                             {t.description && (
@@ -1008,14 +1088,29 @@ export default function TasksPage() {
                                 {t.description}
                               </p>
                             )}
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '6px', background: `${priorityColor}18`, color: priorityColor }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
+                              <span style={{
+                                fontSize: '11px', fontWeight: '700', padding: '3px 9px',
+                                borderRadius: '6px', background: `${priorityColor}18`, color: priorityColor,
+                              }}>
                                 {t.priority}
                               </span>
-                              <span style={{ fontSize: '11px', fontWeight: '500', padding: '2px 8px', borderRadius: '6px', background: isDark ? 'rgba(50,50,50,0.6)' : '#F3F4F6', color: isDark ? '#F5F5F7' : '#6E6E73' }}>
-                                {t.category}
-                              </span>
-                              <span style={{ fontSize: '11px', color: isDark ? '#8E8E93' : '#6E6E73' }}>📅 {formattedDate}</span>
+                              {cCfg && (
+                                <span style={{
+                                  fontSize: '11px', fontWeight: '700', padding: '3px 9px',
+                                  borderRadius: '99px',
+                                  background: isDark ? cCfg.darkBg : cCfg.bg,
+                                  color: cCfg.color,
+                                  border: `1px solid ${cCfg.color}30`,
+                                }}>
+                                  {cCfg.icon} {t.category}
+                                </span>
+                              )}
+                              {t.completed && (
+                                <span style={{ fontSize: '11px', fontWeight: '600', padding: '3px 9px', borderRadius: '99px', background: '#D1FAE5', color: '#059669' }}>
+                                  ✓ Done
+                                </span>
+                              )}
                             </div>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
@@ -1120,6 +1215,7 @@ export default function TasksPage() {
                               onClick={() => handleEditTask(t.id)}
                               onDelete={() => deleteTask(t.id)}
                               onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
+                              viewMode={filterType === 'status' ? 'status' : filterType === 'category' ? 'category' : 'all'}
                             />
                           ))
                         )}
