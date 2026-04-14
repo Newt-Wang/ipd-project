@@ -35,7 +35,7 @@ export default function LoginPage() {
     }
 
     localStorage.setItem("token", data.token);
-    navigate("/tasks");
+    navigate("/home");
   };
 
   return (
