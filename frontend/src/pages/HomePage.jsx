@@ -18,9 +18,10 @@ export default function HomePage() {
           <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "Task Management",
-      description: "Create, edit, and organize your tasks with ease. Set priorities, categories, and due dates to stay on track.",
-      color: "#4F6EF7"
+      title: "My Tasks",
+      description: "View all tasks, add, edit and manage your to-dos, and track your progress with ease.",
+      color: "#4F6EF7",
+      route: "/tasks"
     },
     {
       icon: (
@@ -29,9 +30,10 @@ export default function HomePage() {
           <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
-      title: "Smart Reminders",
-      description: "Get notified about overdue tasks and never miss an important deadline again.",
-      color: "#F59E0B"
+      title: "Pending Reminders",
+      description: "View all incomplete tasks and handle overdue items so you never miss an important deadline.",
+      color: "#F59E0B",
+      route: "/tasks?filter=status&status=pending"
     },
     {
       icon: (
@@ -40,9 +42,10 @@ export default function HomePage() {
           <path d="M3 9h18M9 21V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
-      title: "Category Organization",
-      description: "Organize tasks by Work, Study, and Life categories. Filter and find what you need quickly.",
-      color: "#10B981"
+      title: "Filter by Category",
+      description: "Organize and filter tasks by Work, Study, and Life categories to quickly find what you need.",
+      color: "#10B981",
+      route: "/tasks?filter=category"
     },
     {
       icon: (
@@ -50,9 +53,10 @@ export default function HomePage() {
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "Priority Levels",
-      description: "Set High, Medium, or Low priority for each task. Focus on what matters most.",
-      color: "#7C3AED"
+      title: "View by Date",
+      description: "Browse tasks in a timeline view and pick a specific date to see everything scheduled for that day.",
+      color: "#7C3AED",
+      route: "/tasks?filter=date"
     }
   ];
 
@@ -181,7 +185,7 @@ export default function HomePage() {
                 border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
                 cursor: 'pointer'
               }}
-              onClick={() => navigate("/tasks")}
+              onClick={() => navigate(feature.route)}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : '0 8px 24px rgba(0, 0, 0, 0.1)';
@@ -224,10 +228,10 @@ export default function HomePage() {
             Start Managing Your Tasks Today
           </h2>
           <p className="text-sm mb-6 max-w-xl mx-auto" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
-            Join thousands of users who have improved their productivity with Task Manager. Create your first task now and experience the difference.
+            Click any feature card above to get started, or go directly to your task list to create your first task.
           </p>
           <button
-            onClick={() => navigate("/tasks")}
+            onClick={() => navigate("/tasks?action=add")}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all"
             style={{
               background: isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(243, 244, 246, 0.8)',
