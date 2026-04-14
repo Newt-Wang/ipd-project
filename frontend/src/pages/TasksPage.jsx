@@ -829,225 +829,121 @@ export default function TasksPage() {
         )}
 
         {/* ── Filter Section ── */}
-        <div style={{ 
-          background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '12px',
-          padding: '16px',
-          marginBottom: '16px',
-          boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
-          border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
-        }}>
-          <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
-            Filter by
-          </p>
-          
-          {/* Segmented Control */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '12px', 
-            paddingBottom: '12px',
-            borderBottom: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
-            marginBottom: '16px',
-            overflowX: 'auto',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+        <div style={{ marginBottom: '20px' }}>
+          {/* Tab bar */}
+          <div style={{
+            display: 'flex',
+            gap: '6px',
+            background: isDark ? 'rgba(30,30,30,0.9)' : 'rgba(0,0,0,0.05)',
+            borderRadius: '12px',
+            padding: '4px',
+            marginBottom: '12px'
           }}>
-            <button
-              onClick={() => { setFilterType(null); setSelectedDate(""); setSelectedStatus("all"); }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'all 0.3s ease',
-                background: filterType === null ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === null ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
-                border: 'none',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-              }}
-            >
-              All Tasks
-              {filterType === null && (
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-13px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '20px',
-                  height: '3px',
-                  background: '#5E5CE6',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease'
-                }}/>
-              )}
-            </button>
-            <button
-              onClick={() => setFilterType("date")}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'all 0.3s ease',
-                background: filterType === "date" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === "date" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
-                border: 'none',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-              }}
-            >
-              📅 Date
-              {filterType === "date" && (
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-13px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '20px',
-                  height: '3px',
-                  background: '#5E5CE6',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease'
-                }}/>
-              )}
-            </button>
-            <button
-              onClick={() => setFilterType("status")}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'all 0.3s ease',
-                background: filterType === "status" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === "status" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
-                border: 'none',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-              }}
-            >
-              ◎ Status
-              {filterType === "status" && (
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-13px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '20px',
-                  height: '3px',
-                  background: '#5E5CE6',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease'
-                }}/>
-              )}
-            </button>
-            <button
-              onClick={() => setFilterType("category")}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'all 0.3s ease',
-                background: filterType === "category" ? 'rgba(94, 92, 230, 0.1)' : 'transparent',
-                color: filterType === "category" ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
-                border: 'none',
-                position: 'relative',
-                whiteSpace: 'nowrap',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
-              }}
-            >
-              ◈ Category
-              {filterType === "category" && (
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-13px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '20px',
-                  height: '3px',
-                  background: '#5E5CE6',
-                  borderRadius: '2px',
-                  transition: 'all 0.3s ease'
-                }}/>
-              )}
-            </button>
-
-          </div>
-
-          {filterType === "date" && (
-            <div style={{ marginTop: '12px' }}>
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                style={{
-                  maxWidth: '220px',
-                  padding: '10px 14px',
-                  borderRadius: '12px',
-                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
-                  fontSize: '14px',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
-                  background: isDark ? 'rgba(20, 20, 20, 0.8)' : 'white',
-                  color: isDark ? '#F5F5F7' : '#1D1D1F'
-                }}
-              />
-            </div>
-          )}
-
-          {filterType === "status" && (
-            <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
-              {["all", "pending", "completed"].map((s) => (
+            {[
+              { key: null,       label: 'All Tasks',  icon: '⊞' },
+              { key: 'status',   label: 'Status',     icon: '◎' },
+              { key: 'category', label: 'Category',   icon: '◈' },
+              { key: 'date',     label: 'Date',       icon: '📅' },
+            ].map(({ key, label, icon }) => {
+              const active = filterType === key;
+              return (
                 <button
-                  key={s}
-                  onClick={() => setSelectedStatus(s)}
+                  key={String(key)}
+                  onClick={() => { setFilterType(key); setSelectedDate(''); setSelectedStatus('all'); setSelectedCategory('all'); }}
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    transition: 'all 0.3s ease',
-                    background: selectedStatus === s ? 'rgba(94, 92, 230, 0.1)' : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
-                    color: selectedStatus === s ? '#5E5CE6' : (isDark ? '#F5F5F7' : '#6E6E73'),
-                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                    flex: 1,
+                    padding: '8px 4px',
+                    borderRadius: '9px',
+                    fontSize: '13px',
+                    fontWeight: active ? '600' : '500',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    background: active ? (isDark ? '#2A2A2A' : '#FFFFFF') : 'transparent',
+                    color: active ? (isDark ? '#F5F5F7' : '#1D1D1F') : (isDark ? '#8E8E93' : '#6E6E73'),
+                    boxShadow: active ? (isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.12)') : 'none',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                  {icon} {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Sub-filters */}
+          {filterType === 'date' && (
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{
+                padding: '9px 14px',
+                borderRadius: '10px',
+                border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                fontSize: '13px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+                background: isDark ? 'rgba(20,20,20,0.8)' : 'white',
+                color: isDark ? '#F5F5F7' : '#1D1D1F'
+              }}
+            />
+          )}
+
+          {filterType === 'status' && (
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {[
+                { val: 'all',       label: 'All',       color: '#5E5CE6' },
+                { val: 'pending',   label: 'Pending',   color: '#F59E0B' },
+                { val: 'completed', label: 'Completed', color: '#34C759' },
+              ].map(({ val, label, color }) => (
+                <button
+                  key={val}
+                  onClick={() => setSelectedStatus(val)}
+                  style={{
+                    padding: '7px 16px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    border: selectedStatus === val ? `1.5px solid ${color}` : (isDark ? '1.5px solid rgba(50,50,50,0.6)' : '1.5px solid #E5E5EA'),
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    background: selectedStatus === val ? `${color}15` : (isDark ? 'rgba(30,30,30,0.8)' : 'white'),
+                    color: selectedStatus === val ? color : (isDark ? '#8E8E93' : '#6E6E73'),
+                    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+                  }}
+                >
+                  {label}
                 </button>
               ))}
             </div>
           )}
 
-          {filterType === "category" && (
-            <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+          {filterType === 'category' && (
+            <div style={{ display: 'flex', gap: '8px' }}>
               {[
-                { label: "all",   display: "All",   color: '#5E5CE6' },
-                { label: "Work",  display: "Work",  color: '#4F6EF7' },
-                { label: "Study", display: "Study", color: '#7C3AED' },
-                { label: "Life",  display: "Life",  color: '#10B981' },
-              ].map(({ label, display, color }) => (
+                { val: 'all',   label: 'All',   color: '#5E5CE6', bg: '#EEF1FE' },
+                { val: 'Work',  label: 'Work',  color: '#4F6EF7', bg: '#EEF1FE' },
+                { val: 'Study', label: 'Study', color: '#7C3AED', bg: '#F5F3FF' },
+                { val: 'Life',  label: 'Life',  color: '#10B981', bg: '#D1FAE5' },
+              ].map(({ val, label, color, bg }) => (
                 <button
-                  key={label}
-                  onClick={() => setSelectedCategory(label)}
+                  key={val}
+                  onClick={() => setSelectedCategory(val)}
                   style={{
-                    padding: '8px 16px',
+                    padding: '7px 16px',
                     borderRadius: '8px',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     fontWeight: '500',
-                    transition: 'all 0.3s ease',
-                    background: selectedCategory === label ? `${color}18` : (isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
-                    color: selectedCategory === label ? color : (isDark ? '#F5F5F7' : '#6E6E73'),
-                    border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid #E5E5EA',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif'
+                    border: selectedCategory === val ? `1.5px solid ${color}` : (isDark ? '1.5px solid rgba(50,50,50,0.6)' : '1.5px solid #E5E5EA'),
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    background: selectedCategory === val ? (isDark ? `${color}25` : bg) : (isDark ? 'rgba(30,30,30,0.8)' : 'white'),
+                    color: selectedCategory === val ? color : (isDark ? '#8E8E93' : '#6E6E73'),
+                    fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
                   }}
                 >
-                  {display}
+                  {label}
                 </button>
               ))}
             </div>
@@ -1056,293 +952,183 @@ export default function TasksPage() {
 
         {/* ── Task List ── */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
-              Your Tasks
-            </h2>
-            <span style={{ 
-              fontSize: '12px',
-              fontWeight: '600',
-              padding: '4px 10px',
-              borderRadius: '12px',
-              background: 'rgba(94, 92, 230, 0.1)',
-              color: '#5E5CE6',
-              boxShadow: '0 2px 6px rgba(94, 92, 230, 0.12)'
-            }}>
-              {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-
-          {/* Timeline View for Date Filter */}
+          {/* ── Date: Timeline view ── */}
           {filterType === "date" ? (
-            <div style={{ 
-              position: 'relative',
-              paddingLeft: '40px',
-              maxWidth: '800px',
-              margin: '0 auto'
-            }}>
-              {/* Timeline Line */}
-              <div style={{
-                position: 'absolute',
-                left: '15px',
-                top: '0',
-                bottom: '0',
-                width: '2px',
-                background: isDark ? 'rgba(50, 50, 50, 0.6)' : 'rgba(229, 229, 234, 0.8)'
-              }} />
-
-              {filteredTasks
-                .sort((a, b) => {
-                  // Sort by due date, with earlier dates first
-                  const dateA = a.due_date ? new Date(a.due_date) : new Date(0);
-                  const dateB = b.due_date ? new Date(b.due_date) : new Date(0);
-                  return dateA - dateB;
-                })
-                .map((t, index) => {
-                  const taskDate = t.due_date ? new Date(t.due_date) : null;
-                  const formattedDate = taskDate ? taskDate.toLocaleString('zh-CN', {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  }) : 'No Due Date';
-                  
-                  // Get priority color
-                  const priorityColors = {
-                    High: '#EF4444',
-                    Medium: '#F59E0B',
-                    Low: '#10B981'
-                  };
-                  const priorityColor = priorityColors[t.priority] || '#6E6E73';
-
-                  return (
-                    <div key={t.id} style={{
-                      position: 'relative',
-                      marginBottom: '32px',
-                      padding: '20px',
-                      background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                      backdropFilter: 'blur(10px)',
-                      borderRadius: '16px',
-                      boxShadow: isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)',
-                      border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => handleEditTask(t.id)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateX(8px)';
-                      e.currentTarget.style.boxShadow = isDark ? '0 6px 16px rgba(0, 0, 0, 0.5)' : '0 6px 16px rgba(0, 0, 0, 0.12)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
-                    }}>
-                      {/* Timeline Dot */}
-                      <div style={{
-                        position: 'absolute',
-                        left: '-40px',
-                        top: '24px',
-                        width: '30px',
-                        height: '30px',
-                        borderRadius: '50%',
-                        background: priorityColor,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: `0 4px 8px ${priorityColor}40`,
-                        border: '3px solid' + (isDark ? '#0A0A0A' : '#F9F9FB')
-                      }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                          <path d="M9 11l3 3L22 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                      
-                      {/* Task Content */}
-                      <div className="flex justify-between items-start">
-                        <div style={{ flex: 1, marginRight: '16px' }}>
-                          <h3 style={{ 
-                            fontSize: '16px', 
-                            fontWeight: '600', 
-                            marginBottom: '8px',
-                            color: isDark ? '#F5F5F7' : '#1D1D1F',
-                            textDecoration: t.completed ? 'line-through' : 'none',
-                            opacity: t.completed ? 0.6 : 1
-                          }}>
-                            {t.title}
-                          </h3>
-                          {t.description && (
-                            <p style={{ 
-                              fontSize: '14px', 
-                              marginBottom: '12px',
-                              color: isDark ? '#8E8E93' : '#6E6E73',
-                              lineHeight: '1.5',
-                              opacity: t.completed ? 0.6 : 1
-                            }}>
-                              {t.description}
-                            </p>
-                          )}
-                          <div className="flex flex-wrap gap-2">
-                            <span style={{ 
-                              fontSize: '12px',
-                              fontWeight: '500',
-                              padding: '4px 10px',
-                              borderRadius: '12px',
-                              background: `${priorityColor}15`,
-                              color: priorityColor
-                            }}>
-                              {t.priority}
-                            </span>
-                            <span style={{ 
-                              fontSize: '12px',
-                              fontWeight: '500',
-                              padding: '4px 10px',
-                              borderRadius: '12px',
-                              background: isDark ? 'rgba(50, 50, 50, 0.6)' : 'rgba(243, 244, 246, 0.8)',
-                              color: isDark ? '#F5F5F7' : '#6E6E73'
-                            }}>
-                              {t.category}
-                            </span>
-                            <span style={{ 
-                              fontSize: '12px',
-                              fontWeight: '500',
-                              padding: '4px 10px',
-                              borderRadius: '12px',
-                              background: isDark ? 'rgba(50, 50, 50, 0.6)' : 'rgba(243, 244, 246, 0.8)',
-                              color: isDark ? '#F5F5F7' : '#6E6E73'
-                            }}>
-                              {formattedDate}
-                            </span>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h2 style={{ fontSize: '14px', fontWeight: '600', color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
+                  Timeline
+                </h2>
+                <span style={{
+                  fontSize: '12px', fontWeight: '600', padding: '3px 10px',
+                  borderRadius: '12px', background: 'rgba(94,92,230,0.1)', color: '#5E5CE6'
+                }}>
+                  {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <div style={{ position: 'relative', paddingLeft: '40px', maxWidth: '800px', margin: '0 auto' }}>
+                <div style={{
+                  position: 'absolute', left: '15px', top: '0', bottom: '0',
+                  width: '2px', background: isDark ? 'rgba(50,50,50,0.6)' : 'rgba(229,229,234,0.8)'
+                }} />
+                {filteredTasks
+                  .sort((a, b) => {
+                    const dateA = a.due_date ? new Date(a.due_date) : new Date(0);
+                    const dateB = b.due_date ? new Date(b.due_date) : new Date(0);
+                    return dateA - dateB;
+                  })
+                  .map((t) => {
+                    const taskDate = t.due_date ? new Date(t.due_date) : null;
+                    const formattedDate = taskDate ? taskDate.toLocaleString('en-US', {
+                      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    }) : 'No Due Date';
+                    const priorityColors = { High: '#EF4444', Medium: '#F59E0B', Low: '#10B981' };
+                    const priorityColor = priorityColors[t.priority] || '#6E6E73';
+                    return (
+                      <div key={t.id} style={{
+                        position: 'relative', marginBottom: '16px', padding: '16px',
+                        background: isDark ? 'rgba(30,30,30,0.95)' : '#FFFFFF',
+                        borderRadius: '12px',
+                        boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
+                        borderLeft: `3px solid ${priorityColor}`,
+                        transition: 'all 0.15s ease', cursor: 'pointer',
+                        opacity: t.completed ? 0.55 : 1
+                      }}
+                      onClick={() => handleEditTask(t.id)}
+                      onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0,0,0,0.5)' : '0 4px 12px rgba(0,0,0,0.1)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)'; }}>
+                        <div style={{ position: 'absolute', left: '-33px', top: '18px', width: '16px', height: '16px', borderRadius: '50%', background: priorityColor, border: `3px solid ${isDark ? '#0A0A0A' : '#F9F9FB'}`, boxShadow: `0 0 0 2px ${priorityColor}40` }} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                          <div style={{ flex: 1 }}>
+                            <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: isDark ? '#F5F5F7' : '#1D1D1F', textDecoration: t.completed ? 'line-through' : 'none' }}>
+                              {t.title}
+                            </h3>
+                            {t.description && (
+                              <p style={{ fontSize: '12px', color: isDark ? '#8E8E93' : '#6E6E73', lineHeight: '1.5', marginBottom: '8px' }}>
+                                {t.description}
+                              </p>
+                            )}
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '6px', background: `${priorityColor}18`, color: priorityColor }}>
+                                {t.priority}
+                              </span>
+                              <span style={{ fontSize: '11px', fontWeight: '500', padding: '2px 8px', borderRadius: '6px', background: isDark ? 'rgba(50,50,50,0.6)' : '#F3F4F6', color: isDark ? '#F5F5F7' : '#6E6E73' }}>
+                                {t.category}
+                              </span>
+                              <span style={{ fontSize: '11px', color: isDark ? '#8E8E93' : '#6E6E73' }}>📅 {formattedDate}</span>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
+                            <button onClick={(e) => { e.stopPropagation(); toggleTaskStatus(t.id, t.completed); }}
+                              style={{ width: '32px', height: '32px', borderRadius: '8px', border: t.completed ? 'none' : (isDark ? '1.5px solid rgba(50,50,50,0.6)' : '1.5px solid #E5E5EA'), background: t.completed ? '#34C759' : 'transparent', color: t.completed ? 'white' : (isDark ? '#8E8E93' : '#6E6E73'), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                              {t.completed
+                                ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/></svg>}
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); if (window.confirm('Delete this task?')) deleteTask(t.id); }}
+                              style={{ width: '32px', height: '32px', borderRadius: '8px', border: isDark ? '1.5px solid rgba(50,50,50,0.6)' : '1.5px solid #E5E5EA', background: 'transparent', color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                            </button>
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleTaskStatus(t.id, t.completed);
-                            }}
-                            style={{
-                              width: '40px',
-                              height: '40px',
-                              borderRadius: '12px',
-                              border: t.completed ? 'none' : (isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA'),
-                              background: t.completed ? '#34C759' : (isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
-                              color: t.completed ? 'white' : (isDark ? '#8E8E93' : '#6E6E73'),
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'scale(1.1)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                          >
-                            {t.completed ? (
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            ) : (
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
-                              </svg>
-                            )}
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (window.confirm('Are you sure you want to delete this task?')) {
-                                deleteTask(t.id);
-                              }
-                            }}
-                            style={{
-                              width: '40px',
-                              height: '40px',
-                              borderRadius: '12px',
-                              border: isDark ? '1.5px solid rgba(50, 50, 50, 0.6)' : '1.5px solid #E5E5EA',
-                              background: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-                              color: '#EF4444',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'scale(1.1)';
-                              e.currentTarget.style.background = '#FEE2E2';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'scale(1)';
-                              e.currentTarget.style.background = isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)';
-                            }}
-                          >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </button>
-                        </div>
+                      </div>
+                    );
+                  })}
+                {filteredTasks.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', background: isDark ? 'rgba(30,30,30,0.9)' : '#FFFFFF', borderRadius: '12px', boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08)' }}>
+                    <div style={{ fontSize: '28px', marginBottom: '8px' }}>📅</div>
+                    <p style={{ fontSize: '13px', fontWeight: '500', color: isDark ? '#8E8E93' : '#6E6E73' }}>No tasks for this date</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          ) : (
+            /* ── All / Status / Category: Kanban 2-column ── */
+            (() => {
+              const pending   = filteredTasks.filter(t => !Boolean(t.completed));
+              const completed = filteredTasks.filter(t => Boolean(t.completed));
+
+              const colConfig = [
+                {
+                  tasks: pending,
+                  label: 'Pending',
+                  count: pending.length,
+                  accentColor: '#F59E0B',
+                  headerBg: isDark ? 'rgba(245,158,11,0.12)' : '#FFFBEB',
+                  headerBorder: isDark ? 'rgba(245,158,11,0.25)' : '#FDE68A',
+                  emptyIcon: '📋',
+                  emptyText: 'No pending tasks',
+                },
+                {
+                  tasks: completed,
+                  label: 'Completed',
+                  count: completed.length,
+                  accentColor: '#34C759',
+                  headerBg: isDark ? 'rgba(52,199,89,0.10)' : '#F0FDF4',
+                  headerBorder: isDark ? 'rgba(52,199,89,0.22)' : '#BBF7D0',
+                  emptyIcon: '✓',
+                  emptyText: 'Nothing completed yet',
+                },
+              ];
+
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'start' }}>
+                  {colConfig.map(col => (
+                    <div key={col.label} style={{
+                      borderRadius: '14px',
+                      overflow: 'hidden',
+                      background: isDark ? 'rgba(20,20,20,0.6)' : 'rgba(0,0,0,0.03)',
+                      border: isDark ? '1px solid rgba(50,50,50,0.5)' : '1px solid rgba(0,0,0,0.07)',
+                    }}>
+                      {/* Column header */}
+                      <div style={{
+                        padding: '10px 14px',
+                        background: col.headerBg,
+                        borderBottom: `1px solid ${col.headerBorder}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: col.accentColor, flexShrink: 0 }} />
+                        <span style={{ fontSize: '13px', fontWeight: '700', color: col.accentColor, letterSpacing: '0.3px' }}>
+                          {col.label}
+                        </span>
+                        <span style={{
+                          marginLeft: 'auto',
+                          fontSize: '11px', fontWeight: '700',
+                          padding: '1px 8px', borderRadius: '10px',
+                          background: `${col.accentColor}20`,
+                          color: col.accentColor
+                        }}>
+                          {col.count}
+                        </span>
+                      </div>
+
+                      {/* Cards */}
+                      <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: '8px', minHeight: '120px' }}>
+                        {col.tasks.length === 0 ? (
+                          <div style={{ textAlign: 'center', padding: '28px 0', color: isDark ? '#6E6E73' : '#AEAEB2' }}>
+                            <div style={{ fontSize: '22px', marginBottom: '6px' }}>{col.emptyIcon}</div>
+                            <div style={{ fontSize: '12px' }}>{col.emptyText}</div>
+                          </div>
+                        ) : (
+                          col.tasks.map(t => (
+                            <TaskCard
+                              key={t.id}
+                              task={t}
+                              onClick={() => handleEditTask(t.id)}
+                              onDelete={() => deleteTask(t.id)}
+                              onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
+                            />
+                          ))
+                        )}
                       </div>
                     </div>
-                  );
-                })}
-
-              {filteredTasks.length === 0 && (
-                <div style={{ 
-                  position: 'relative',
-                  padding: '40px 20px',
-                  textAlign: 'center',
-                  background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '16px',
-                  boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
-                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
-                }}>
-                  <div className="text-4xl mb-3">📅</div>
-                  <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
-                    No tasks found for this date
-                  </p>
-                  <p className="text-xs mt-1" style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
-                    Try selecting a different date or add a new task
-                  </p>
+                  ))}
                 </div>
-              )}
-            </div>
-          ) : (
-            /* Grid View for other filters */
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {filteredTasks.map((t) => (
-                <TaskCard
-                  key={t.id}
-                  task={t}
-                  onClick={() => handleEditTask(t.id)}
-                  onDelete={() => deleteTask(t.id)}
-                  onToggleStatus={() => toggleTaskStatus(t.id, t.completed)}
-                />
-              ))}
-
-              {filteredTasks.length === 0 && (
-                <div className="col-span-full" style={{ 
-                  background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: '12px',
-                  padding: '40px 20px',
-                  textAlign: 'center',
-                  boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
-                  border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)'
-                }}>
-                  <div className="text-4xl mb-3">📋</div>
-                  <p className="font-semibold text-sm" style={{ color: isDark ? '#F5F5F7' : '#6E6E73' }}>
-                    No tasks found
-                  </p>
-                  <p className="text-xs mt-1" style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
-                    {filterType ? "Try a different filter" : "Add your first task by clicking the + button"}
-                  </p>
-                </div>
-              )}
-            </div>
+              );
+            })()
           )}
         </div>
       </div>

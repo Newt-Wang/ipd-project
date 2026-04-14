@@ -22,9 +22,9 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
   };
 
   const priorityConfig = {
-    High:   { cls: 'badge-high',   label: 'High',   bg: '#FEE2E2', color: '#991B1B' },
-    Medium: { cls: 'badge-medium', label: 'Medium', bg: '#FEF3C7', color: '#92400E' },
-    Low:    { cls: 'badge-low',    label: 'Low',    bg: '#D1FAE5', color: '#065F46' },
+    High:   { cls: 'badge-high',   label: 'High',   bg: '#FEE2E2', color: '#DC2626', bar: '#EF4444' },
+    Medium: { cls: 'badge-medium', label: 'Medium', bg: '#FEF3C7', color: '#D97706', bar: '#F59E0B' },
+    Low:    { cls: 'badge-low',    label: 'Low',    bg: '#D1FAE5', color: '#059669', bar: '#10B981' },
   };
   const pCfg = priorityConfig[task.priority] || priorityConfig.Medium;
 
@@ -39,24 +39,30 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
     && new Date(task.due_date) < new Date();
 
   return (
-    <div className={`p-4 rounded-xl transition-all ${statusDone ? 'opacity-60' : ''}`} style={{ 
-      background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-      backdropFilter: 'blur(10px)',
-      boxShadow: isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
-      border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
+    <div className={`rounded-xl transition-all ${statusDone ? 'opacity-50' : ''}`} style={{
+      background: isDark ? 'rgba(30, 30, 30, 0.95)' : '#FFFFFF',
+      boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "San Francisco", "Helvetica Neue", Arial, sans-serif',
-      transition: 'all 0.2s ease',
+      transition: 'all 0.15s ease',
       height: '100%',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      overflow: 'hidden',
+      borderLeft: `3px solid ${pCfg.bar}`,
     }} onMouseEnter={(e) => {
-      e.currentTarget.style.transform = 'translateY(-2px)';
-      e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0, 0, 0, 0.4)' : '0 4px 12px rgba(0, 0, 0, 0.08)';
+      if (!statusDone) {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = isDark
+          ? '0 6px 16px rgba(0,0,0,0.5)'
+          : '0 6px 16px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.04)';
+      }
     }} onMouseLeave={(e) => {
       e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = isDark ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.06)';
+      e.currentTarget.style.boxShadow = isDark
+        ? '0 1px 4px rgba(0,0,0,0.4)'
+        : '0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)';
     }}>
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3" style={{ padding: '12px 12px 10px 12px' }}>
 
         {/* Checkbox */}
         <button
@@ -92,7 +98,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
           <div className="flex items-start justify-between gap-2">
             <span
               style={{
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: '600',
                 lineHeight: '1.4',
                 color: statusDone ? '#8E8E93' : (isDark ? '#F5F5F7' : '#1D1D1F'),
@@ -102,27 +108,18 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             >
               {task.title || "(Untitled)"}
             </span>
-            <div style={{ 
+            <span style={{
               flexShrink: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
+              fontSize: '10px',
+              fontWeight: '700',
+              padding: '2px 7px',
+              borderRadius: '6px',
+              background: pCfg.bg,
+              color: pCfg.color,
+              letterSpacing: '0.3px'
             }}>
-              <span style={{ 
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                background: pCfg.bg === '#FEE2E2' ? '#EF4444' : 
-                           pCfg.bg === '#FEF3C7' ? '#F59E0B' : '#10B981'
-              }}/>
-              <span style={{ 
-                fontSize: '10px',
-                fontWeight: '500',
-                color: pCfg.color
-              }}>
-                {pCfg.label}
-              </span>
-            </div>
+              {pCfg.label}
+            </span>
           </div>
 
           {task.description && (
@@ -144,16 +141,16 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
           <div style={{
             marginTop: '8px',
             display: 'flex',
-            flexDirection: 'column',
-            gap: '4px',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: '6px',
             fontSize: '10px'
           }}>
             {cCfg && (
               <span style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                alignSelf: 'flex-start',
-                padding: '1px 7px',
+                padding: '2px 7px',
                 borderRadius: '99px',
                 fontSize: '10px',
                 fontWeight: '600',
@@ -163,19 +160,14 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
                 {task.category}
               </span>
             )}
-            {task.created_at && (
-              <span style={{ color: isDark ? '#8E8E93' : '#8E8E93' }}>
-                Created {formatTime(task.created_at)}
-              </span>
-            )}
             {task.due_date && (
               <span
-                style={{ 
+                style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '3px',
                   fontWeight: '500',
-                  color: isOverdue ? 'rgba(255, 149, 0, 0.7)' : (isDark ? '#8E8E93' : '#6E6E73'),
+                  color: isOverdue ? '#EF4444' : (isDark ? '#8E8E93' : '#6E6E73'),
                   whiteSpace: 'nowrap'
                 }}
               >
@@ -183,7 +175,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
                   <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-                {isOverdue ? 'Overdue' : ''}{isOverdue && ' · '}{formatTime(task.due_date)}
+                {isOverdue ? 'Overdue · ' : ''}{formatTime(task.due_date)}
               </span>
             )}
           </div>
@@ -200,19 +192,16 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus }) {
             }}
             style={{
               flexShrink: 0,
-              opacity: 0.5,
-              transition: 'all 0.2s ease',
+              opacity: 0,
+              transition: 'all 0.15s ease',
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
               padding: '2px'
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = 1;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = 0.5;
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = 1; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = 0; }}
+            className="task-card-delete"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
