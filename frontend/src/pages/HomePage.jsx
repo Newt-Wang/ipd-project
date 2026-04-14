@@ -18,8 +18,8 @@ export default function HomePage() {
           <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "我的任务",
-      description: "查看所有任务，添加、编辑和管理你的待办事项，轻松追踪进度。",
+      title: "My Tasks",
+      description: "View all tasks, add, edit and manage your to-dos, and track your progress with ease.",
       color: "#4F6EF7",
       route: "/tasks"
     },
@@ -30,8 +30,8 @@ export default function HomePage() {
           <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
-      title: "待办提醒",
-      description: "查看所有未完成任务，及时处理逾期事项，不错过任何重要截止日期。",
+      title: "Pending Reminders",
+      description: "View all incomplete tasks and handle overdue items so you never miss an important deadline.",
       color: "#F59E0B",
       route: "/tasks?filter=status&status=pending"
     },
@@ -42,8 +42,8 @@ export default function HomePage() {
           <path d="M3 9h18M9 21V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
-      title: "按类别筛选",
-      description: "按工作、学习、生活三大类别整理和筛选任务，快速定位你需要的内容。",
+      title: "Filter by Category",
+      description: "Organize and filter tasks by Work, Study, and Life categories to quickly find what you need.",
       color: "#10B981",
       route: "/tasks?filter=category"
     },
@@ -53,8 +53,8 @@ export default function HomePage() {
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "按日期查看",
-      description: "以时间轴视图浏览任务，选择特定日期查看当天的所有安排。",
+      title: "View by Date",
+      description: "Browse tasks in a timeline view and pick a specific date to see everything scheduled for that day.",
       color: "#7C3AED",
       route: "/tasks?filter=date"
     }
@@ -225,10 +225,10 @@ export default function HomePage() {
           }}
         >
           <h2 className="text-2xl font-bold mb-6" style={{ color: isDark ? '#F5F5F7' : '#1D1D1F' }}>
-            立即开始管理你的任务
+            Start Managing Your Tasks Today
           </h2>
           <p className="text-sm mb-6 max-w-xl mx-auto" style={{ color: isDark ? '#8E8E93' : '#6E6E73' }}>
-            选择上方任意功能卡片开始使用，或点击下方按钮直接前往任务列表，创建你的第一个任务。
+            Click any feature card above to get started, or go directly to your task list to create your first task.
           </p>
           <button
             onClick={() => navigate("/tasks")}
