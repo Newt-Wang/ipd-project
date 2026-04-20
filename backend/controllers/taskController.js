@@ -81,7 +81,7 @@ export const getNotifications = async (req, res) => {
   const userId = req.user.id;
   try {
     const [tasks] = await pool.query(
-      `SELECT id, title, created_at FROM tasks
+      `SELECT id, title, description, priority, category, due_date, created_at FROM tasks
        WHERE user_id = ? AND completed = 0
        AND created_at <= DATE_SUB(NOW(), INTERVAL 1 DAY)`,
       [userId]
