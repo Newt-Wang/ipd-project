@@ -76,14 +76,14 @@ export const deleteTask = async (req, res) => {
   }
 };
 
-// 获取未完成超过1天的任务通知
+// 获取截止日期已过且未完成的任务通知
 export const getNotifications = async (req, res) => {
   const userId = req.user.id;
   try {
     const [tasks] = await pool.query(
       `SELECT id, title, description, priority, category, due_date, created_at FROM tasks
        WHERE user_id = ? AND completed = 0
-       AND created_at <= DATE_SUB(NOW(), INTERVAL 1 DAY)`,
+       AND due_date IS NOT NULL AND due_date < NOW()`,
       [userId]
     );
     res.json(tasks);
