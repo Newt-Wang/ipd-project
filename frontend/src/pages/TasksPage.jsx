@@ -221,6 +221,11 @@ export default function TasksPage() {
                   setDismissedIds(next);
                   localStorage.setItem('dismissedNotifications', JSON.stringify(next));
                 };
+                const sendRemindersAgain = () => {
+                  setDismissedIds([]);
+                  localStorage.removeItem('dismissedNotifications');
+                  fetchNotifications();
+                };
                 return (
                   <div style={{
                     position: 'absolute',
@@ -281,9 +286,26 @@ export default function TasksPage() {
                       {visible.length === 0 ? (
                         <div style={{ padding: '32px 16px', textAlign: 'center' }}>
                           <div style={{ fontSize: '24px', marginBottom: '8px' }}>✓</div>
-                          <div style={{ fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
+                          <div style={{ fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73', marginBottom: '12px' }}>
                             No overdue tasks
                           </div>
+                          {notifications.length > 0 && (
+                            <button
+                              onClick={sendRemindersAgain}
+                              style={{
+                                fontSize: '12px', fontWeight: '500',
+                                padding: '6px 14px', borderRadius: '8px',
+                                background: isDark ? 'rgba(40,40,40,0.8)' : 'rgba(243,244,246,0.8)',
+                                border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                                color: isDark ? '#F5F5F7' : '#1D1D1F',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(50,50,50,0.9)' : 'rgba(229,231,235,0.9)'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = isDark ? 'rgba(40,40,40,0.8)' : 'rgba(243,244,246,0.8)'; }}
+                            >
+                              Send Reminders Again
+                            </button>
+                          )}
                         </div>
                       ) : (
                         visible.map(n => {
