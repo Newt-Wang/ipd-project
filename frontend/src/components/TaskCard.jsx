@@ -1,6 +1,8 @@
 import { useTheme } from "../context/ThemeContext";
+import { useSound } from "../hooks/useSound";
 
 export default function TaskCard({ task, onClick, onDelete, onToggleStatus, viewMode = "all" }) {
+  const playClickSound = useSound();
   const { isDark } = useTheme();
   const statusDone = Boolean(task.completed);
 
@@ -108,7 +110,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
         <div className="flex items-start gap-3" style={{ padding: '10px 12px 10px 12px' }}>
           {/* Checkbox */}
           <button
-            onClick={(e) => { e.stopPropagation(); onToggleStatus && onToggleStatus(); }}
+            onClick={(e) => { e.stopPropagation(); playClickSound(); onToggleStatus && onToggleStatus(); }}
             style={{
               flexShrink: 0, marginTop: '2px',
               width: '22px', height: '22px', borderRadius: '50%',
@@ -128,7 +130,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
           </button>
 
           {/* Content */}
-          <div className="flex-1 min-w-0" onClick={onClick} style={{ cursor: 'pointer' }}>
+          <div className="flex-1 min-w-0" onClick={() => { playClickSound(); onClick && onClick(); }} style={{ cursor: 'pointer' }}>
             <span style={{
               fontSize: '13px', fontWeight: '600', lineHeight: '1.4',
               color: statusDone ? '#8E8E93' : (isDark ? '#F5F5F7' : '#1D1D1F'),
@@ -171,7 +173,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
           {/* Delete */}
           {onDelete && (
             <button
-              onClick={(e) => { e.stopPropagation(); if (window.confirm('Are you sure you want to delete this task?')) onDelete(); }}
+              onClick={(e) => { e.stopPropagation(); playClickSound(); if (window.confirm('Are you sure you want to delete this task?')) onDelete(); }}
               style={{
                 flexShrink: 0, opacity: 0, transition: 'all 0.15s ease',
                 background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px',
@@ -250,7 +252,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
         <div className="flex items-start gap-3" style={{ padding: '10px 12px 10px 12px' }}>
           {/* Checkbox */}
           <button
-            onClick={(e) => { e.stopPropagation(); onToggleStatus && onToggleStatus(); }}
+            onClick={(e) => { e.stopPropagation(); playClickSound(); onToggleStatus && onToggleStatus(); }}
             style={{
               flexShrink: 0, marginTop: '2px',
               width: '20px', height: '20px', borderRadius: '50%',
@@ -270,7 +272,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
           </button>
 
           {/* Content */}
-          <div className="flex-1 min-w-0" onClick={onClick} style={{ cursor: 'pointer' }}>
+          <div className="flex-1 min-w-0" onClick={() => { playClickSound(); onClick && onClick(); }} style={{ cursor: 'pointer' }}>
             <span style={{
               fontSize: '13px', fontWeight: '600', lineHeight: '1.4',
               color: statusDone ? '#8E8E93' : (isDark ? '#F5F5F7' : '#1D1D1F'),
@@ -309,7 +311,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
           {/* Delete */}
           {onDelete && (
             <button
-              onClick={(e) => { e.stopPropagation(); if (window.confirm('Are you sure you want to delete this task?')) onDelete(); }}
+              onClick={(e) => { e.stopPropagation(); playClickSound(); if (window.confirm('Are you sure you want to delete this task?')) onDelete(); }}
               style={{
                 flexShrink: 0, opacity: 0, transition: 'all 0.15s ease',
                 background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px',
@@ -359,6 +361,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
         <button
           onClick={(e) => {
             e.stopPropagation();
+            playClickSound();
             onToggleStatus && onToggleStatus();
           }}
           style={{
@@ -385,7 +388,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
         </button>
 
         {/* Content */}
-        <div className="flex-1 min-w-0" onClick={onClick} style={{ cursor: 'pointer' }}>
+        <div className="flex-1 min-w-0" onClick={() => { playClickSound(); onClick && onClick(); }} style={{ cursor: 'pointer' }}>
           <div className="flex items-start justify-between gap-2">
             <span
               style={{
@@ -487,6 +490,7 @@ export default function TaskCard({ task, onClick, onDelete, onToggleStatus, view
           <button
             onClick={(e) => {
               e.stopPropagation();
+              playClickSound();
               if (window.confirm('Are you sure you want to delete this task?')) {
                 onDelete();
               }
