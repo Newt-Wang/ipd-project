@@ -636,9 +636,9 @@ export default function TasksPage() {
               <div style={{ fontSize: '11px', fontWeight: '500', marginBottom: '6px', color: isDark ? '#8E8E93' : '#6E6E73' }}>
                 Progress
               </div>
-              <div className="w-full h-1 rounded-full" style={{ background: isDark ? '#333333' : '#E5E5EA' }}>
+              <div className="w-full h-2 rounded-full" style={{ background: isDark ? '#333333' : '#E5E5EA' }}>
                 <div
-                  className="h-1 rounded-full transition-all duration-300"
+                  className="h-2 rounded-full transition-all duration-300"
                   style={{
                     width: `${Math.round((completedTasks / totalTasks) * 100)}%`,
                     background: 'linear-gradient(90deg, #5E5CE6, #34C759)'
