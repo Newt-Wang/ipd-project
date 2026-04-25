@@ -69,6 +69,24 @@ export default function TasksPage() {
     }
   };
 
+  const dismissOne = (id) => {
+    const next = [...dismissedIds, id];
+    setDismissedIds(next);
+    localStorage.setItem('dismissedNotifications', JSON.stringify(next));
+  };
+
+  const dismissAll = (visible) => {
+    const next = [...dismissedIds, ...visible.map(n => n.id)];
+    setDismissedIds(next);
+    localStorage.setItem('dismissedNotifications', JSON.stringify(next));
+  };
+
+  const sendRemindersAgain = async () => {
+    setDismissedIds([]);
+    localStorage.removeItem('dismissedNotifications');
+    await fetchNotifications();
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -214,7 +232,7 @@ export default function TasksPage() {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                {notifications.filter(n => !dismissedIds.includes(n.id)).length > 0 && (
+                {notifications.length > 0 && (
                   <span style={{
                     position: 'absolute',
                     top: '4px',
@@ -222,7 +240,7 @@ export default function TasksPage() {
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: '#EF4444',
+                    background: notifications.filter(n => !dismissedIds.includes(n.id)).length > 0 ? '#EF4444' : '#AEAEB2',
                     border: '1.5px solid white'
                   }} />
                 )}
@@ -230,21 +248,6 @@ export default function TasksPage() {
               {showNotifications && (() => {
                 const priorityColor = { High: '#EF4444', Medium: '#F59E0B', Low: '#10B981' };
                 const visible = notifications.filter(n => !dismissedIds.includes(n.id));
-                const dismissOne = (id) => {
-                  const next = [...dismissedIds, id];
-                  setDismissedIds(next);
-                  localStorage.setItem('dismissedNotifications', JSON.stringify(next));
-                };
-                const dismissAll = () => {
-                  const next = [...dismissedIds, ...visible.map(n => n.id)];
-                  setDismissedIds(next);
-                  localStorage.setItem('dismissedNotifications', JSON.stringify(next));
-                };
-                const sendRemindersAgain = () => {
-                  setDismissedIds([]);
-                  localStorage.removeItem('dismissedNotifications');
-                  fetchNotifications();
-                };
                 return (
                   <div style={{
                     position: 'absolute',
@@ -283,9 +286,9 @@ export default function TasksPage() {
                           }}>{visible.length}</span>
                         )}
                       </div>
-                      {visible.length > 0 && (
+                      {visible.length > 0 ? (
                         <button
-                          onClick={dismissAll}
+                          onClick={() => dismissAll(visible)}
                           style={{
                             fontSize: '11px', fontWeight: '500',
                             color: isDark ? '#8E8E93' : '#6E6E73',
@@ -296,6 +299,20 @@ export default function TasksPage() {
                           onMouseLeave={e => { e.currentTarget.style.color = isDark ? '#8E8E93' : '#6E6E73'; }}
                         >
                           Dismiss all
+                        </button>
+                      ) : notifications.length > visible.length && (
+                        <button
+                          onClick={sendRemindersAgain}
+                          style={{
+                            fontSize: '11px', fontWeight: '500',
+                            color: isDark ? '#8E8E93' : '#6E6E73',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            padding: '2px 4px', borderRadius: '4px'
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color = '#0A84FF'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = isDark ? '#8E8E93' : '#6E6E73'; }}
+                        >
+                          Send Reminders Again
                         </button>
                       )}
                     </div>
@@ -308,7 +325,7 @@ export default function TasksPage() {
                           <div style={{ fontSize: '13px', color: isDark ? '#8E8E93' : '#6E6E73', marginBottom: '12px' }}>
                             No overdue tasks
                           </div>
-                          {notifications.length > 0 && (
+                          {notifications.length > visible.length && (
                             <button
                               onClick={sendRemindersAgain}
                               style={{
@@ -329,10 +346,8 @@ export default function TasksPage() {
                       ) : (
                         visible.map(n => {
                           const pColor = priorityColor[n.priority] || '#6E6E73';
-                          const overdueDays = Math.floor((Date.now() - new Date(n.created_at)) / 86400000);
-                          const dueLabel = n.due_date
-                            ? `Due: ${new Date(n.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
-                            : 'No due date';
+                          const overdueDays = Math.floor((Date.now() - new Date(n.due_date)) / 86400000);
+                          const dueLabel = `Due: ${new Date(n.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`;
                           return (
                             <div key={n.id} style={{
                               padding: '12px 16px',
