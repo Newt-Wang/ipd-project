@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSound } from "../hooks/useSound";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const playClickSound = useSound();
 
   const [form, setForm] = useState({
     email: "",
@@ -19,6 +21,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    playClickSound();
 
     if (form.password !== form.confirmPassword) {
       alert("Two passwords do not match!");
@@ -125,7 +128,7 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
           Already have an account?{' '}
-          <a href="/" className="font-semibold" style={{ color: 'var(--brand-primary)' }}>
+          <a href="/" onClick={() => playClickSound()} className="font-semibold" style={{ color: 'var(--brand-primary)' }}>
             Sign in
           </a>
         </p>

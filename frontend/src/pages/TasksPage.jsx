@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import TaskCard from "../components/TaskCard";
+import { useSound } from "../hooks/useSound";
 
 export default function TasksPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
+  const playClickSound = useSound();
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState({
     title: "",
@@ -32,28 +34,6 @@ export default function TasksPage() {
     catch { return []; }
   });
   const [showAddForm, setShowAddForm] = useState(initialShowAdd);
-
-  const playClickSound = () => {
-    try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.05);
-      
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
-    } catch (error) {
-      console.log('Audio play failed:', error);
-    }
-  };
 
   const token = localStorage.getItem("token");
 
@@ -198,7 +178,7 @@ export default function TasksPage() {
           <div className="flex items-center gap-3">
             {/* Home Button */}
             <button
-              onClick={() => navigate("/home")}
+              onClick={() => { playClickSound(); navigate("/home"); }}
               className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
               style={{
                 color: isDark ? '#F5F5F7' : '#6E6E73',
@@ -218,7 +198,7 @@ export default function TasksPage() {
             {/* Notification Bell */}
             <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setShowNotifications(!showNotifications)}
+                onClick={() => { playClickSound(); setShowNotifications(!showNotifications); }}
                 className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
                 style={{
                   color: isDark ? '#F5F5F7' : '#6E6E73',
@@ -288,7 +268,7 @@ export default function TasksPage() {
                       </div>
                       {visible.length > 0 ? (
                         <button
-                          onClick={() => dismissAll(visible)}
+                          onClick={() => { playClickSound(); dismissAll(visible); }}
                           style={{
                             fontSize: '11px', fontWeight: '500',
                             color: isDark ? '#8E8E93' : '#6E6E73',
@@ -302,7 +282,7 @@ export default function TasksPage() {
                         </button>
                       ) : notifications.length > visible.length && (
                         <button
-                          onClick={sendRemindersAgain}
+                          onClick={() => { playClickSound(); sendRemindersAgain(); }}
                           style={{
                             fontSize: '11px', fontWeight: '500',
                             color: isDark ? '#8E8E93' : '#6E6E73',
@@ -327,7 +307,7 @@ export default function TasksPage() {
                           </div>
                           {notifications.length > visible.length && (
                             <button
-                              onClick={sendRemindersAgain}
+                              onClick={() => { playClickSound(); sendRemindersAgain(); }}
                               style={{
                                 fontSize: '12px', fontWeight: '500',
                                 padding: '6px 14px', borderRadius: '8px',
@@ -373,7 +353,7 @@ export default function TasksPage() {
                                   </div>
                                 </div>
                                 <button
-                                  onClick={() => dismissOne(n.id)}
+                                  onClick={() => { playClickSound(); dismissOne(n.id); }}
                                   title="Dismiss"
                                   style={{
                                     flexShrink: 0, background: 'none', border: 'none',
@@ -420,7 +400,7 @@ export default function TasksPage() {
 
                               {/* Go to task */}
                               <button
-                                onClick={() => { navigate(`/tasks/edit/${n.id}`); setShowNotifications(false); }}
+                                onClick={() => { playClickSound(); navigate(`/tasks/edit/${n.id}`); setShowNotifications(false); }}
                                 style={{
                                   marginTop: '8px', width: '100%',
                                   padding: '6px', borderRadius: '8px',
@@ -444,7 +424,7 @@ export default function TasksPage() {
               })()}
             </div>
             <button
-              onClick={toggleTheme}
+              onClick={() => { playClickSound(); toggleTheme(); }}
               className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
               style={{
                 color: isDark ? '#F5F5F7' : '#6E6E73',
@@ -466,7 +446,7 @@ export default function TasksPage() {
               )}
             </button>
             <button
-              onClick={handleLogout}
+              onClick={() => { playClickSound(); handleLogout(); }}
               className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-xl transition-all"
               style={{
                 color: isDark ? '#F5F5F7' : '#6E6E73',
@@ -741,7 +721,7 @@ export default function TasksPage() {
                       <button
                         type="button"
                         key={label}
-                        onClick={() => setForm(prev => ({ ...prev, priority: label }))}
+                        onClick={() => { playClickSound(); setForm(prev => ({ ...prev, priority: label })); }}
                         style={{
                           flex: 1,
                           padding: '10px',
@@ -779,7 +759,7 @@ export default function TasksPage() {
                       <button
                         type="button"
                         key={label}
-                        onClick={() => setForm(prev => ({ ...prev, category: label }))}
+                        onClick={() => { playClickSound(); setForm(prev => ({ ...prev, category: label })); }}
                         style={{
                           flex: 1,
                           padding: '10px',
@@ -905,7 +885,7 @@ export default function TasksPage() {
               return (
                 <button
                   key={String(key)}
-                  onClick={() => { setFilterType(key); setSelectedDate(''); setSelectedStatus('all'); setSelectedCategory('all'); }}
+                  onClick={() => { playClickSound(); setFilterType(key); setSelectedDate(''); setSelectedStatus('all'); setSelectedCategory('all'); }}
                   style={{
                     flex: 1,
                     padding: '8px 4px',
@@ -955,7 +935,7 @@ export default function TasksPage() {
               ].map(({ val, label, color }) => (
                 <button
                   key={val}
-                  onClick={() => setSelectedStatus(val)}
+                  onClick={() => { playClickSound(); setSelectedStatus(val); }}
                   style={{
                     padding: '7px 16px',
                     borderRadius: '8px',
@@ -985,7 +965,7 @@ export default function TasksPage() {
               ].map(({ val, label, color, bg }) => (
                 <button
                   key={val}
-                  onClick={() => setSelectedCategory(val)}
+                  onClick={() => { playClickSound(); setSelectedCategory(val); }}
                   style={{
                     padding: '7px 16px',
                     borderRadius: '8px',
@@ -1170,13 +1150,13 @@ export default function TasksPage() {
                             </div>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
-                            <button onClick={(e) => { e.stopPropagation(); toggleTaskStatus(t.id, t.completed); }}
+                            <button onClick={(e) => { e.stopPropagation(); playClickSound(); toggleTaskStatus(t.id, t.completed); }}
                               style={{ width: '32px', height: '32px', borderRadius: '8px', border: t.completed ? 'none' : (isDark ? '1.5px solid rgba(50,50,50,0.6)' : '1.5px solid #E5E5EA'), background: t.completed ? '#34C759' : 'transparent', color: t.completed ? 'white' : (isDark ? '#8E8E93' : '#6E6E73'), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                               {t.completed
                                 ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                                 : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/></svg>}
                             </button>
-                            <button onClick={(e) => { e.stopPropagation(); if (window.confirm('Delete this task?')) deleteTask(t.id); }}
+                            <button onClick={(e) => { e.stopPropagation(); playClickSound(); if (window.confirm('Delete this task?')) deleteTask(t.id); }}
                               style={{ width: '32px', height: '32px', borderRadius: '8px', border: isDark ? '1.5px solid rgba(50,50,50,0.6)' : '1.5px solid #E5E5EA', background: 'transparent', color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                             </button>

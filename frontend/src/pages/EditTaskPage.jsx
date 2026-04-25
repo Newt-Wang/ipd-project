@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSound } from "../hooks/useSound";
 
 export default function EditTaskPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const playClickSound = useSound();
 
   const [task, setTask] = useState({
     title: "",
@@ -58,7 +60,7 @@ export default function EditTaskPage() {
       <nav className="navbar">
         <div className="max-w-2xl mx-auto px-6 h-16 flex items-center justify-between">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => { playClickSound(); navigate(-1); }}
             className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl transition-all"
             style={{ color: 'var(--text-secondary)', background: 'var(--surface-secondary)', border: '1.5px solid var(--border)' }}
           >
@@ -73,7 +75,7 @@ export default function EditTaskPage() {
           </span>
 
           <button
-            onClick={saveTask}
+            onClick={() => { playClickSound(); saveTask(); }}
             className="text-sm font-semibold px-4 py-2 rounded-xl transition-all"
             style={{
               background: 'linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)',
@@ -133,7 +135,7 @@ export default function EditTaskPage() {
                     <button
                       type="button"
                       key={label}
-                      onClick={() => setTask(prev => ({ ...prev, priority: label }))}
+                      onClick={() => { playClickSound(); setTask(prev => ({ ...prev, priority: label })); }}
                       className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
                       style={{
                         background: active ? bg : 'var(--surface-secondary)',
@@ -165,7 +167,7 @@ export default function EditTaskPage() {
                     <button
                       type="button"
                       key={label}
-                      onClick={() => setTask(prev => ({ ...prev, category: label }))}
+                      onClick={() => { playClickSound(); setTask(prev => ({ ...prev, category: label })); }}
                       className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
                       style={{
                         background: active ? bg : 'var(--surface-secondary)',
@@ -198,7 +200,7 @@ export default function EditTaskPage() {
 
         {/* ── Delete ── */}
         <button
-          onClick={deleteTask}
+          onClick={() => { playClickSound(); deleteTask(); }}
           className="w-full mt-5 py-3 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
           style={{
             background: 'var(--danger-light)',
