@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSound } from "../hooks/useSound";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const playClickSound = useSound();
 
   const [form, setForm] = useState({
     email: "",
@@ -18,6 +20,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    playClickSound();
 
     const res = await fetch("http://localhost:4000/api/auth/login", {
       method: "POST",
@@ -98,7 +101,7 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
           Don't have an account?{' '}
-          <a href="/register" className="font-semibold" style={{ color: 'var(--brand-primary)' }}>
+          <a href="/register" onClick={() => playClickSound()} className="font-semibold" style={{ color: 'var(--brand-primary)' }}>
             Create one
           </a>
         </p>

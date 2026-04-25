@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useSound } from "../hooks/useSound";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { isDark, toggleTheme } = useTheme();
+  const playClickSound = useSound();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -90,7 +92,7 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={toggleTheme}
+              onClick={() => { playClickSound(); toggleTheme(); }}
               className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
               style={{
                 color: isDark ? '#F5F5F7' : '#6E6E73',
@@ -112,7 +114,7 @@ export default function HomePage() {
               )}
             </button>
             <button
-              onClick={handleLogout}
+              onClick={() => { playClickSound(); handleLogout(); }}
               className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-xl transition-all"
               style={{
                 color: isDark ? '#F5F5F7' : '#6E6E73',
@@ -148,7 +150,7 @@ export default function HomePage() {
             Your personal productivity companion. Organize your work, track your progress, and achieve your goals with our intuitive task management system.
           </p>
           <button
-            onClick={() => navigate("/tasks")}
+            onClick={() => { playClickSound(); navigate("/tasks"); }}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all"
             style={{
               background: 'linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)',
@@ -185,7 +187,7 @@ export default function HomePage() {
                 border: isDark ? '1px solid rgba(50, 50, 50, 0.6)' : '1px solid rgba(229, 229, 234, 0.6)',
                 cursor: 'pointer'
               }}
-              onClick={() => navigate(feature.route)}
+              onClick={() => { playClickSound(); navigate(feature.route); }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : '0 8px 24px rgba(0, 0, 0, 0.1)';
@@ -231,7 +233,7 @@ export default function HomePage() {
             Click any feature card above to get started, or go directly to your task list to create your first task.
           </p>
           <button
-            onClick={() => navigate("/tasks?action=add")}
+            onClick={() => { playClickSound(); navigate("/tasks?action=add"); }}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all"
             style={{
               background: isDark ? 'rgba(40, 40, 40, 0.8)' : 'rgba(243, 244, 246, 0.8)',
