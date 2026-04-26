@@ -11,7 +11,7 @@ export default function TasksPage() {
     priority: "Medium", // 默认中等
     due_date: "",
   });
-  const [showAddForm, setShowAddForm] = useState(false); // 控制添加任务表单的显示/隐藏
+  const [showAddForm, setShowAddForm] = useState(false); // Control the display/hide of the added task form
   const [filterType, setFilterType] = useState(null); // 'date' / 'status'//
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -52,7 +52,7 @@ export default function TasksPage() {
     });
 
     setForm({ title: "", description: "", priority: "Medium", due_date: "" });
-    setShowAddForm(false); // 提交后隐藏表单
+    setShowAddForm(false); // Hide the menu after submission
     fetchTasks();
   };
 
@@ -97,7 +97,7 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center py-12 px-4">
-      {/* 顶部标题和退出按钮 */}
+      {/* Top title and logout button */}
       <div className="w-full max-w-2xl flex justify-between items-center mb-10">
         <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
           Personal Task Manager
@@ -110,7 +110,7 @@ export default function TasksPage() {
         </button>
       </div>
 
-      {/* 添加任务按钮 */}
+      {/* Add new task button */}
       <button
         onClick={() => setShowAddForm(!showAddForm)}
         className={`w-full max-w-2xl py-3 rounded-xl text-white text-lg font-medium transition duration-300 active:scale-[0.98] active:translate-y-0.5 mb-6 flex items-center justify-center gap-2 ${
@@ -150,7 +150,7 @@ export default function TasksPage() {
         )}
       </button>
 
-      {/* 添加任务卡片（可折叠） */}
+      {/* Add new task card (collapsible) */}
       {showAddForm && (
         <div className="w-full max-w-2xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6 mb-10">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -175,7 +175,7 @@ export default function TasksPage() {
               }
             />
 
-            {/* Priority Apple 风 segmented 控件 */}
+            {/* Priority Apple style segmented control */}
             <div>
               <p className="text-sm font-semibold text-gray-700 mb-2">
                 Priority
