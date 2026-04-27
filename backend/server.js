@@ -11,6 +11,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
-app.listen(4000, () => {
-  console.log("Server running on http://localhost:4000");
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(4000, () => {
+    console.log("Server running on http://localhost:4000");
+  });
+}
+
+export default app;
