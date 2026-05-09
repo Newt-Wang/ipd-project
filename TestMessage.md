@@ -196,3 +196,16 @@ mock 了 jsonwebtoken，不依赖真实密钥。
 
 - **Backend**：3 个单元测试（mock 隔离）+ 1 个集成测试（真实 DB）
 - **Frontend**：1 个组件渲染测试 + 1 个 Hook 行为测试，均为单元测试
+
+---
+
+# Sample User Test Cases
+
+| ID | Test Case | Sample Data | Steps | Expected Result | Time Spent | User Feedback |
+|----|-----------|-------------|-------|-----------------|------------|---------------|
+| 1 | New user registration | Email: `emma.tan@example.com`<br>Password: `TaskFlow2026!`<br>Confirm Password: `TaskFlow2026!` | 1. Open the register page.<br>2. Enter valid registration data.<br>3. Click **Create Account**. | Account is created successfully, user is redirected to the login page, and a success message is displayed. | 1 min 20 sec | Registration was easy and the success message was clear. |
+| 2 | Login with valid credentials | Email: `emma.tan@example.com`<br>Password: `TaskFlow2026!` | 1. Open the login page.<br>2. Enter valid credentials.<br>3. Click **Sign In**. | User logs in successfully and is redirected to the homepage with live summary cards visible. | 45 sec | Login felt smooth and the loading state was helpful. |
+| 3 | Create a high-priority work task | Title: `Finish database report`<br>Description: `Prepare the final analytics summary for Monday's review meeting.`<br>Priority: `High`<br>Category: `Work`<br>Due Date: `2026-05-15 09:00` | 1. Open the tasks page.<br>2. Click the floating **Add Task** button.<br>3. Fill in the task form.<br>4. Click **Add Task**. | The task is added successfully and appears with the correct priority and category. | 2 min 10 sec | The add-task flow was simple, but users may want a bigger date picker on small screens. |
+| 4 | Search and sort tasks | Search keyword: `report`<br>Sort option: `Priority` | 1. Open the tasks page.<br>2. Enter `report` in the search field.<br>3. Change sorting to **Priority**. | Only matching tasks are shown, and high-priority matching tasks appear first. | 50 sec | Search was fast and sorting made the results easier to review. |
+| 5 | Complete a pending task | Task title: `Finish database report` | 1. Open the tasks page.<br>2. Find the target task.<br>3. Click the status toggle button. | The task changes to completed, completed styling appears, and progress statistics increase. | 35 sec | Completing a task felt intuitive and the visual update was immediate. |
+| 6 | View overdue reminder notification | Title: `Pay electricity bill`<br>Due Date: `2026-05-01 18:00`<br>Status: `Pending` | 1. Log in with a user who has an overdue task.<br>2. Open the tasks page.<br>3. Click the notification button. | The overdue reminder panel opens and shows the overdue task details with dismiss and navigation options. | 55 sec | The reminder panel was useful and made overdue items easy to find. |
