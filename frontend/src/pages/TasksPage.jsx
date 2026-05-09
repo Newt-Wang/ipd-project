@@ -27,6 +27,8 @@ export default function TasksPage() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("default");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [dismissedIds, setDismissedIds] = useState(() => {
@@ -74,6 +76,15 @@ export default function TasksPage() {
 
   const handleEditTask = (id) => {
     navigate(`/tasks/edit/${id}`);
+  };
+
+  const clearAllFilters = () => {
+    setFilterType(null);
+    setSelectedDate("");
+    setSelectedStatus("all");
+    setSelectedCategory("all");
+    setSearchTerm("");
+    setSortBy("default");
   };
 
   const fetchTasks = async () => {
@@ -124,6 +135,16 @@ export default function TasksPage() {
     fetchTasks();
   };
 
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  const hasActiveControls = Boolean(
+    filterType ||
+    selectedDate ||
+    selectedStatus !== "all" ||
+    selectedCategory !== "all" ||
+    normalizedSearchTerm ||
+    sortBy !== "default"
+  );
+
   const filteredTasks = tasks.filter((task) => {
     if (filterType === "date") {
       if (!selectedDate) return true;
@@ -140,6 +161,34 @@ export default function TasksPage() {
       return task.category === selectedCategory;
     }
     return true;
+  }).filter((task) => {
+    if (!normalizedSearchTerm) return true;
+    return [task.title, task.description, task.category, task.priority]
+      .filter(Boolean)
+      .some((value) => value.toLowerCase().includes(normalizedSearchTerm));
+  });
+
+  const priorityRank = { High: 0, Medium: 1, Low: 2 };
+  const visibleTasks = [...filteredTasks].sort((a, b) => {
+    if (sortBy === "due-asc") {
+      const aTime = a.due_date ? new Date(a.due_date).getTime() : Number.POSITIVE_INFINITY;
+      const bTime = b.due_date ? new Date(b.due_date).getTime() : Number.POSITIVE_INFINITY;
+      return aTime - bTime;
+    }
+    if (sortBy === "due-desc") {
+      const aTime = a.due_date ? new Date(a.due_date).getTime() : Number.NEGATIVE_INFINITY;
+      const bTime = b.due_date ? new Date(b.due_date).getTime() : Number.NEGATIVE_INFINITY;
+      return bTime - aTime;
+    }
+    if (sortBy === "priority") {
+      const priorityDelta = (priorityRank[a.priority] ?? 99) - (priorityRank[b.priority] ?? 99);
+      if (priorityDelta !== 0) return priorityDelta;
+      return (a.title || "").localeCompare(b.title || "");
+    }
+    if (sortBy === "title") {
+      return (a.title || "").localeCompare(b.title || "");
+    }
+    return 0;
   });
 
   const totalTasks = tasks.length;
@@ -984,6 +1033,97 @@ export default function TasksPage() {
               ))}
             </div>
           )}
+
+          <div style={{
+            marginTop: '12px',
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1fr)',
+            gap: '10px'
+          }}>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '10px',
+              alignItems: 'center'
+            }}>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search title, description, category..."
+                style={{
+                  flex: '1 1 240px',
+                  minWidth: '220px',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                  fontSize: '13px',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+                  background: isDark ? 'rgba(20,20,20,0.8)' : 'white',
+                  color: isDark ? '#F5F5F7' : '#1D1D1F'
+                }}
+              />
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                  fontSize: '13px',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+                  background: isDark ? 'rgba(20,20,20,0.8)' : 'white',
+                  color: isDark ? '#F5F5F7' : '#1D1D1F',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="default">Default order</option>
+                <option value="due-asc">Due date ↑</option>
+                <option value="due-desc">Due date ↓</option>
+                <option value="priority">Priority</option>
+                <option value="title">Title A-Z</option>
+              </select>
+
+              <button
+                type="button"
+                onClick={() => { playClickSound(); clearAllFilters(); }}
+                disabled={!hasActiveControls}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: isDark ? '1px solid rgba(50,50,50,0.6)' : '1px solid #E5E5EA',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+                  background: isDark ? 'rgba(30,30,30,0.8)' : 'white',
+                  color: hasActiveControls ? (isDark ? '#F5F5F7' : '#1D1D1F') : '#8E8E93',
+                  cursor: hasActiveControls ? 'pointer' : 'not-allowed',
+                  opacity: hasActiveControls ? 1 : 0.7
+                }}
+              >
+                Clear filters
+              </button>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '8px',
+              fontSize: '12px',
+              color: isDark ? '#8E8E93' : '#6E6E73'
+            }}>
+              <span>
+                Showing {visibleTasks.length} of {tasks.length} tasks
+              </span>
+              {normalizedSearchTerm && (
+                <span>
+                  Search: “{searchTerm.trim()}”
+                </span>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* ── Task List ── */}
@@ -999,7 +1139,7 @@ export default function TasksPage() {
                   fontSize: '12px', fontWeight: '600', padding: '3px 10px',
                   borderRadius: '12px', background: 'rgba(94,92,230,0.1)', color: '#5E5CE6'
                 }}>
-                  {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
+                  {visibleTasks.length} task{visibleTasks.length !== 1 ? 's' : ''}
                 </span>
               </div>
               <div style={{ position: 'relative', paddingLeft: '40px', maxWidth: '800px', margin: '0 auto' }}>
@@ -1007,12 +1147,13 @@ export default function TasksPage() {
                   position: 'absolute', left: '15px', top: '0', bottom: '0',
                   width: '2px', background: isDark ? 'rgba(50,50,50,0.6)' : 'rgba(229,229,234,0.8)'
                 }} />
-                {filteredTasks
-                  .sort((a, b) => {
-                    const dateA = a.due_date ? new Date(a.due_date) : new Date(0);
-                    const dateB = b.due_date ? new Date(b.due_date) : new Date(0);
-                    return dateA - dateB;
-                  })
+                {(sortBy === "default"
+                  ? [...visibleTasks].sort((a, b) => {
+                      const dateA = a.due_date ? new Date(a.due_date) : new Date(0);
+                      const dateB = b.due_date ? new Date(b.due_date) : new Date(0);
+                      return dateA - dateB;
+                    })
+                  : visibleTasks)
                   .map((t) => {
                     const taskDate = t.due_date ? new Date(t.due_date) : null;
                     const isOverdue = taskDate && !t.completed && taskDate < new Date();
@@ -1165,7 +1306,7 @@ export default function TasksPage() {
                       </div>
                     );
                   })}
-                {filteredTasks.length === 0 && (
+                {visibleTasks.length === 0 && (
                   <div style={{ textAlign: 'center', padding: '40px 20px', background: isDark ? 'rgba(30,30,30,0.9)' : '#FFFFFF', borderRadius: '12px', boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.08)' }}>
                     <div style={{ fontSize: '28px', marginBottom: '8px' }}>📅</div>
                     <p style={{ fontSize: '13px', fontWeight: '500', color: isDark ? '#8E8E93' : '#6E6E73' }}>No tasks for this date</p>
@@ -1177,8 +1318,8 @@ export default function TasksPage() {
           ) : (
             /* ── All / Status / Category: Kanban 2-column ── */
             (() => {
-              const pending   = filteredTasks.filter(t => !Boolean(t.completed));
-              const completed = filteredTasks.filter(t => Boolean(t.completed));
+              const pending = visibleTasks.filter(t => !Boolean(t.completed));
+              const completed = visibleTasks.filter(t => Boolean(t.completed));
 
               const colConfig = [
                 {
