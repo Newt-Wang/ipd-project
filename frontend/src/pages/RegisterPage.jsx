@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthLayout from "../components/AuthLayout";
+import PasswordToggle from "../components/PasswordToggle";
 import { useSound } from "../hooks/useSound";
 
 export default function RegisterPage() {
@@ -75,21 +77,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="auth-bg px-4">
-      <div className="auth-card fade-in-up">
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4"
-               style={{ background: "linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)" }}>
+    <AuthLayout variant="register">
+      <div className="auth-card auth-card-register fade-in-up">
+        <div className="auth-card-header">
+          <div className="auth-card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="9" cy="7" r="4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-            Create account
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+          <p className="auth-eyebrow">Task Manager</p>
+          <h1 className="auth-card-title">Create account</h1>
+          <p className="auth-card-subtitle">
             Start managing your tasks today
           </p>
         </div>
@@ -100,12 +100,13 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="register-email">
               Email address
             </label>
             <input
+              id="register-email"
               name="email"
               type="email"
               placeholder="you@example.com"
@@ -117,47 +118,37 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="register-password">
               Password
             </label>
             <div className="input-with-action">
               <input
+                id="register-password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="At least 8 characters"
+                placeholder="Create a password"
                 value={form.password}
                 onChange={handleChange}
                 className="form-input"
                 autoComplete="new-password"
                 required
               />
-              <button
-                type="button"
-                className="input-action-button"
+              <PasswordToggle
+                isVisible={showPassword}
+                label="password"
                 onClick={() => { playClickSound(); setShowPassword((prev) => !prev); }}
-              >
-                {showPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                )}
-              </button>
+              />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="register-confirm-password">
               Confirm password
             </label>
             <div className="input-with-action">
               <input
+                id="register-confirm-password"
                 name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Re-enter your password"
@@ -167,45 +158,33 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 required
               />
-              <button
-                type="button"
-                className="input-action-button"
+              <PasswordToggle
+                isVisible={showConfirmPassword}
+                label="confirmation password"
                 onClick={() => { playClickSound(); setShowConfirmPassword((prev) => !prev); }}
-              >
-                {showConfirmPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                )}
-              </button>
+              />
             </div>
             {passwordsMismatch && (
-              <p className="mt-1.5 text-sm" style={{ color: "var(--danger)" }}>
+              <p className="auth-inline-error">
                 Passwords do not match yet.
               </p>
             )}
           </div>
 
-          <div className="pt-2">
+          <div className="auth-submit">
             <button type="submit" className="btn-primary" disabled={isSubmitting || passwordsMismatch}>
               {isSubmitting ? "Creating Account..." : "Create Account"}
             </button>
           </div>
         </form>
 
-        <p className="mt-6 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
+        <p className="auth-footer">
           Already have an account?{" "}
-          <a href="/" onClick={() => playClickSound()} className="font-semibold" style={{ color: "var(--brand-primary)" }}>
+          <Link to="/" onClick={() => playClickSound()} className="auth-link">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
