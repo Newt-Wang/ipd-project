@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import AuthLayout from "../components/AuthLayout";
+import PasswordToggle from "../components/PasswordToggle";
 import { useSound } from "../hooks/useSound";
 
 export default function LoginPage() {
@@ -66,20 +68,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-bg px-4">
+    <AuthLayout>
       <div className="auth-card fade-in-up">
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4"
-               style={{ background: "linear-gradient(135deg, #4F6EF7 0%, #7C3AED 100%)" }}>
+        <div className="auth-card-header">
+          <div className="auth-card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 11l3 3L22 4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-            Welcome back
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+          <p className="auth-eyebrow">Task Manager</p>
+          <h1 className="auth-card-title">Welcome back</h1>
+          <p className="auth-card-subtitle">
             Sign in to your Task Manager
           </p>
         </div>
@@ -96,12 +96,13 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="login-email">
               Email address
             </label>
             <input
+              id="login-email"
               type="email"
               name="email"
               placeholder="you@example.com"
@@ -113,12 +114,13 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="login-password">
               Password
             </label>
             <div className="input-with-action">
               <input
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password"
@@ -128,40 +130,28 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 required
               />
-              <button
-                type="button"
-                className="input-action-button"
+              <PasswordToggle
+                isVisible={showPassword}
+                label="password"
                 onClick={() => { playClickSound(); setShowPassword((prev) => !prev); }}
-              >
-                {showPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                )}
-              </button>
+              />
             </div>
           </div>
 
-          <div className="pt-2">
+          <div className="auth-submit">
             <button type="submit" className="btn-primary" disabled={isSubmitting}>
               {isSubmitting ? "Signing In..." : "Sign In"}
             </button>
           </div>
         </form>
 
-        <p className="mt-6 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
+        <p className="auth-footer">
           Don't have an account?{" "}
-          <a href="/register" onClick={() => playClickSound()} className="font-semibold" style={{ color: "var(--brand-primary)" }}>
+          <Link to="/register" onClick={() => playClickSound()} className="auth-link">
             Create one
-          </a>
+          </Link>
         </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
