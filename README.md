@@ -1,4 +1,4 @@
-# Project Task Manager(No more changes final version)
+# Project Task Manager(No more changes, final version)
 
 Project Task Manager is a full-stack task management application built with **Node.js + Express + MySQL** on the backend and **React + Vite + Tailwind CSS** on the frontend.
 
